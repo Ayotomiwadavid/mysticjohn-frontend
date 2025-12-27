@@ -62,9 +62,8 @@ export interface Service {
 }
 
 export interface AvailabilitySlot {
-  start: string;
-  end: string;
-  available: boolean;
+  date: string;
+  slots: string[]; // Array of time strings like ["09:00", "09:30", ...]
 }
 
 export interface CreateBookingRequest {
@@ -82,6 +81,8 @@ export interface Booking {
   endDateTime: string;
   type: 'ONLINE' | 'IN_PERSON';
   status: string;
+  meetingLink?: string;
+  paymentStatus?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -178,6 +179,36 @@ export interface Group {
   privacy: 'PUBLIC' | 'PRIVATE';
   memberCount?: number;
   isMember?: boolean;
+}
+
+/**
+ * Chat Types
+ */
+export interface ChatMessage {
+  id: string;
+  groupId: string;
+  userId: string;
+  user?: User;
+  message: string;
+  type: 'TEXT' | 'IMAGE' | 'FILE';
+  mediaUrl?: string;
+  readBy?: Array<{
+    userId: string;
+    readAt: string;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SendMessageRequest {
+  message: string;
+  type?: 'TEXT' | 'IMAGE' | 'FILE';
+  mediaUrl?: string;
+}
+
+export interface GetChatMessagesOptions {
+  limit?: number;
+  before?: string;
 }
 
 export interface Post {

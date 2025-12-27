@@ -1,22 +1,49 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Navigation } from '@/components/navigation'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { MysticalSparkles } from '@/components/mystical-sparkles'
+import { BookingDialog } from '@/components/BookingDialog'
 import { useBookings } from '@/lib/hooks'
+import type { Service } from '@/lib/api/types'
 import { Video, MapPin, Clock, DollarSign } from 'lucide-react'
 
 export default function BookingsPage() {
+  const searchParams = useSearchParams()
   const { services, isLoading, error, fetchServices } = useBookings()
   const [filter, setFilter] = useState<'all' | 'online' | 'in-person'>('all')
+  const [selectedService, setSelectedService] = useState<Service | null>(null)
+  const [isBookingDialogOpen, setIsBookingDialogOpen] = useState(false)
 
   useEffect(() => {
     fetchServices()
   }, [fetchServices])
+
+  // Auto-open booking dialog if coming from "Book New Session" button
+  useEffect(() => {
+    const shouldOpen = searchParams.get('book') === 'true'
+    const serviceId = searchParams.get('serviceId')
+
+    if (shouldOpen && services.length > 0 && !isBookingDialogOpen) {
+      // If serviceId is provided, find that service
+      if (serviceId) {
+        const service = services.find(s => s.id === serviceId)
+        if (service) {
+          setSelectedService(service)
+          setIsBookingDialogOpen(true)
+        }
+      } else {
+        // Otherwise, open first available service
+        setSelectedService(services[0])
+        setIsBookingDialogOpen(true)
+      }
+    }
+  }, [searchParams, services, isBookingDialogOpen])
 
   const filteredServices = services.filter(service => {
     if (filter === 'all') return true
@@ -128,7 +155,14 @@ export default function BookingsPage() {
                                 <DollarSign className="h-5 w-5 text-primary" />
                                 <span className="text-2xl font-bold text-foreground">£{service.price}</span>
                               </div>
-                              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                              <Button
+                                size="sm"
+                                className="bg-primary text-primary-foreground hover:bg-primary/90"
+                                onClick={() => {
+                                  setSelectedService(service)
+                                  setIsBookingDialogOpen(true)
+                                }}
+                              >
                                 Book Now
                               </Button>
                             </div>
@@ -143,6 +177,11 @@ export default function BookingsPage() {
           </main>
         </div>
       </div>
+      <BookingDialog
+        open={isBookingDialogOpen}
+        onOpenChange={setIsBookingDialogOpen}
+        service={selectedService}
+      />
     </ProtectedRoute>
   )
 }

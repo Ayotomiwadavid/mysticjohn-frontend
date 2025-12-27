@@ -19,4 +19,5 @@ export { groupsApi } from './groups.api';
 export { creditsApi } from './credits.api';
 export { checkoutApi } from './checkout.api';
 export { adminApi } from './admin.api';
+export { chatApi } from './chat.api';
 

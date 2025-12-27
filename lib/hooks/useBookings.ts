@@ -13,7 +13,7 @@ import { ApiClientError } from '@/lib/api/client';
 interface UseBookingsReturn {
   services: Service[];
   bookings: Booking[];
-  availability: AvailabilitySlot[];
+  availability: AvailabilitySlot | null;
   isLoading: boolean;
   error: string | null;
   fetchServices: () => Promise<void>;
@@ -34,7 +34,7 @@ interface UseBookingsReturn {
 export function useBookings(): UseBookingsReturn {
   const [services, setServices] = useState<Service[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
+  const [availability, setAvailability] = useState<AvailabilitySlot | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,7 +86,7 @@ export function useBookings(): UseBookingsReturn {
             ? err.message
             : 'Failed to fetch availability.';
         setError(errorMessage);
-        setAvailability([]);
+        setAvailability(null);
       } finally {
         setIsLoading(false);
       }
@@ -181,7 +181,7 @@ export function useBookings(): UseBookingsReturn {
   }, []);
 
   const clearAvailability = useCallback(() => {
-    setAvailability([]);
+    setAvailability(null);
   }, []);
 
   return {

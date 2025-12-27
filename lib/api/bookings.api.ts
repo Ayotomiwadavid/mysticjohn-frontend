@@ -34,8 +34,8 @@ export const bookingsApi = {
   getAvailability: async (
     serviceId: string,
     date: string
-  ): Promise<AvailabilitySlot[]> => {
-    return apiClient.get<AvailabilitySlot[]>('/api/availability', {
+  ): Promise<AvailabilitySlot> => {
+    return apiClient.get<AvailabilitySlot>('/api/availability', {
       serviceId,
       date,
     });
