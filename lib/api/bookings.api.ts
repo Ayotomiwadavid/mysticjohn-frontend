@@ -76,4 +76,3 @@ export const bookingsApi = {
     return apiClient.post<void>(`/api/bookings/${id}/cancel`);
   },
 };
-
