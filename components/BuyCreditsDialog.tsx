@@ -77,7 +77,7 @@ export function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialogProps) 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <DialogTitle className="text-2xl font-bold bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
             Buy Credits
           </DialogTitle>
           <DialogDescription>

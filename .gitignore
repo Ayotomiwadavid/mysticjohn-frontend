@@ -8,6 +8,7 @@ pnpm-lock.yaml
 .env
 .env.local
 .env.*.local
+.next/
 
 # Build output
 dist/
@@ -43,3 +44,5 @@ prisma/migrations/
 tmp/
 temp/
 
+#workspace
+wix.code-workspace
