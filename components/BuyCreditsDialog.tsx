@@ -42,22 +42,41 @@ export function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialogProps) 
 
   const handlePurchase = async (packId: string) => {
     setSelectedPack(packId);
-    const result = await checkout({
-      itemType: 'credits',
-      creditPackId: packId,
-    });
+    try {
+      const result = await checkout({
+        itemType: 'credits',
+        creditPackId: packId,
+      });
 
-    if (result) {
-      toast.success('Credit pack purchased successfully!');
-      // Refresh balance to show updated credits
-      await fetchBalance();
-      // Close dialog after a short delay to show success
-      setTimeout(() => {
-        onOpenChange(false);
-        setSelectedPack(null);
-      }, 1000);
+      if (result) {
+        // If free pack, success immediately
+        if (!result.checkoutSession && !result.paymentIntent) {
+          toast.success('Credit pack purchased successfully!');
+          await fetchBalance();
+          setTimeout(() => {
+            onOpenChange(false);
+            setSelectedPack(null);
+          }, 1000);
+          return;
+        }
+
+        // For paid packs, redirect to Stripe Checkout
+        if (result.checkoutSession?.url) {
+          // Redirect to Stripe Checkout Session
+          window.location.href = result.checkoutSession.url;
+        } else if (result.paymentIntent?.clientSecret) {
+          // Fallback to PaymentIntent (legacy support)
+          toast.error('Please update the backend to use Checkout Sessions');
+          setSelectedPack(null);
+        } else {
+          toast.error('Checkout session not received');
+          setSelectedPack(null);
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to process payment');
+      setSelectedPack(null);
     }
-    // Error handling is done via useEffect watching checkoutError
   };
 
   const formatPrice = (price: number) => {

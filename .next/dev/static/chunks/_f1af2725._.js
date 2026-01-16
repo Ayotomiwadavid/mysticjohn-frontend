@@ -274,17 +274,34 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2f$client$2e$ts__
 const bookingsApi = {
     /**
    * Get all active services
-   * Backend route: bookingRoutes mounted at /api with router.get('/')
-   * This resolves to /api/ (note trailing slash)
+   * Backend route: /api/services or /api/ (for backward compatibility)
+   * Transforms backend format (_id, durationMins, active) to frontend format (id, duration, isActive)
    */ getServices: async ()=>{
-        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiClient"].get('/api/');
-        return response;
+        const response = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiClient"].get('/api/services');
+        // Transform backend format to frontend format
+        return response.map((service)=>({
+                id: service._id || service.id,
+                name: service.name,
+                description: service.description,
+                price: service.price,
+                duration: service.durationMins || service.duration,
+                isActive: service.active !== undefined ? service.active : service.isActive
+            }));
     },
     /**
    * Get service by ID
    * Backend route: /api/:id (now correctly ordered after specific routes)
+   * Transforms backend format to frontend format
    */ getService: async (id)=>{
-        return __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiClient"].get(`/api/${id}`);
+        const service = await __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiClient"].get(`/api/${id}`);
+        return {
+            id: service._id || service.id,
+            name: service.name,
+            description: service.description,
+            price: service.price,
+            duration: service.durationMins || service.duration,
+            isActive: service.active !== undefined ? service.active : service.isActive
+        };
     },
     /**
    * Get available time slots

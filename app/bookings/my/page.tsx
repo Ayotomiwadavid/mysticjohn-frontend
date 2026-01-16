@@ -70,7 +70,7 @@ export default function MyBookingsPage() {
           <Navigation />
           <div className="flex">
             <DashboardSidebar />
-            <main className="flex-1 p-6 lg:p-8">
+            <main className="flex-1 p-6 lg:p-8 lg:ml-64">
               <div className="flex items-center justify-center py-20">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>

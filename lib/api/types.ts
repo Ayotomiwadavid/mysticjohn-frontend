@@ -70,6 +70,7 @@ export interface CreateBookingRequest {
   serviceId: string;
   startDateTime: string;
   type: 'ONLINE' | 'IN_PERSON';
+  paymentMethod?: 'CREDITS' | 'STRIPE';
 }
 
 export interface Booking {
@@ -320,5 +321,17 @@ export interface CheckoutResponse {
   enrollmentId?: string;
   ticketIds?: string[];
   message: string;
+  paymentIntent?: {
+    id: string;
+    clientSecret: string;
+  };
+  checkoutSession?: {
+    id: string;
+    url: string;
+  };
+  order?: any;
+  wallet?: any;
+  tickets?: any[];
+  enrollment?: any;
 }
 

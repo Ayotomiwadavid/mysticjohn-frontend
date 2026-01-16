@@ -58,7 +58,7 @@ export default function MessagesPage() {
         <div className="flex">
           <DashboardSidebar />
 
-          <main className="flex-1 p-6 lg:p-8">
+          <main className="flex-1 p-6 lg:p-8 lg:ml-64">
             {/* Header */}
             <div className="mb-8 relative">
               <div className="absolute -top-4 -left-4 w-32 h-32 bg-primary/20 blur-3xl rounded-full animate-glow" />

@@ -11,10 +11,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useBookings } from '@/lib/hooks';
+import { useCredits } from '@/lib/hooks';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import type { Service } from '@/lib/api/types';
-import { Calendar, Clock, Video, MapPin, Loader2, Check } from 'lucide-react';
+import { Calendar, Clock, Video, MapPin, Loader2, Check, Coins, CreditCard } from 'lucide-react';
 import { format, addDays, startOfWeek, addWeeks, isSameDay, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -26,11 +27,13 @@ interface BookingDialogProps {
 
 export function BookingDialog({ open, onOpenChange, service }: BookingDialogProps) {
   const { fetchAvailability, createBooking, isLoading, error, clearError, availability } = useBookings();
+  const { balance, fetchBalance } = useCredits();
   const { isAuthenticated } = useAuthContext();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [bookingType, setBookingType] = useState<'ONLINE' | 'IN_PERSON'>('ONLINE');
+  const [paymentMethod, setPaymentMethod] = useState<'CREDITS' | 'STRIPE'>('STRIPE');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
@@ -41,10 +44,15 @@ export function BookingDialog({ open, onOpenChange, service }: BookingDialogProp
       setSelectedDate(null);
       setSelectedTime(null);
       setBookingType('ONLINE');
+      setPaymentMethod('STRIPE');
       setAvailableSlots([]);
       clearError();
+      // Fetch credit balance when dialog opens
+      if (isAuthenticated) {
+        fetchBalance();
+      }
     }
-  }, [open, service, clearError]);
+  }, [open, service, clearError, isAuthenticated, fetchBalance]);
 
   // Fetch availability when date is selected
   useEffect(() => {
@@ -91,10 +99,15 @@ export function BookingDialog({ open, onOpenChange, service }: BookingDialogProp
         serviceId: service.id,
         startDateTime: bookingDateTime.toISOString(),
         type: bookingType,
+        paymentMethod,
       });
 
       if (booking) {
         toast.success('Booking created successfully!');
+        // Refresh credit balance if paid with credits
+        if (paymentMethod === 'CREDITS') {
+          await fetchBalance();
+        }
         onOpenChange(false);
       }
     } catch (err) {
@@ -272,6 +285,48 @@ export function BookingDialog({ open, onOpenChange, service }: BookingDialogProp
             </div>
           )}
 
+          {/* Payment Method Selection */}
+          {selectedDate && selectedTime && (
+            <div>
+              <label className="text-sm font-medium text-foreground mb-3">
+                Payment Method
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="button"
+                  variant={paymentMethod === 'STRIPE' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('STRIPE')}
+                  className="h-auto py-4 flex flex-col items-center gap-2"
+                >
+                  <CreditCard className="h-5 w-5" />
+                  <span>Card Payment</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant={paymentMethod === 'CREDITS' ? 'default' : 'outline'}
+                  onClick={() => setPaymentMethod('CREDITS')}
+                  className="h-auto py-4 flex flex-col items-center gap-2"
+                  disabled={!balance || balance.balance < service.price}
+                >
+                  <Coins className="h-5 w-5" />
+                  <div className="flex flex-col items-center">
+                    <span>Credits</span>
+                    {balance && (
+                      <span className="text-xs opacity-70">
+                        {balance.balance} available
+                      </span>
+                    )}
+                  </div>
+                </Button>
+              </div>
+              {paymentMethod === 'CREDITS' && balance && balance.balance < service.price && (
+                <p className="text-sm text-destructive mt-2">
+                  Insufficient credits. You need {service.price} credits but have {balance.balance}.
+                </p>
+              )}
+            </div>
+          )}
+
           {/* Booking Summary */}
           {selectedDate && selectedTime && (
             <Card className="border-primary/30 bg-primary/5">
@@ -298,9 +353,21 @@ export function BookingDialog({ open, onOpenChange, service }: BookingDialogProp
                       {bookingType === 'ONLINE' ? 'Online' : 'In-Person'}
                     </span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Payment:</span>
+                    <span className="font-medium text-foreground">
+                      {paymentMethod === 'CREDITS' ? 'Credits' : 'Card'}
+                    </span>
+                  </div>
                   <div className="flex justify-between pt-2 border-t border-border/50">
                     <span className="text-muted-foreground">Total:</span>
-                    <span className="font-bold text-primary text-lg">£{service.price}</span>
+                    <span className="font-bold text-primary text-lg">
+                      {paymentMethod === 'CREDITS' ? (
+                        <span>{service.price} Credits</span>
+                      ) : (
+                        <span>£{service.price}</span>
+                      )}
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -319,7 +386,12 @@ export function BookingDialog({ open, onOpenChange, service }: BookingDialogProp
             </Button>
             <Button
               onClick={handleBooking}
-              disabled={!selectedDate || !selectedTime || isSubmitting}
+              disabled={
+                !selectedDate ||
+                !selectedTime ||
+                isSubmitting ||
+                (paymentMethod === 'CREDITS' && (!balance || balance.balance < service.price))
+              }
               className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {isSubmitting ? (
@@ -328,7 +400,7 @@ export function BookingDialog({ open, onOpenChange, service }: BookingDialogProp
                   Booking...
                 </>
               ) : (
-                'Confirm Booking'
+                paymentMethod === 'CREDITS' ? 'Book with Credits' : 'Confirm Booking'
               )}
             </Button>
           </div>

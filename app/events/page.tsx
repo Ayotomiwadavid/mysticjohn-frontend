@@ -46,7 +46,7 @@ export default function EventsPage() {
         <div className="flex">
           <DashboardSidebar />
 
-          <main className="flex-1">
+          <main className="flex-1 lg:ml-64">
             {/* Header */}
             <section className="relative overflow-hidden py-16 md:py-24">
               <MysticalSparkles />

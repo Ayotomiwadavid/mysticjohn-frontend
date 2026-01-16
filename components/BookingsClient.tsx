@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Navigation } from '@/components/navigation'
+import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { MysticalSparkles } from '@/components/mystical-sparkles'
 import { BookingDialog } from '@/components/BookingDialog'
 import { useBookings } from '@/lib/hooks'
@@ -63,7 +64,10 @@ export default function BookingsClient() {
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      <main>
+      <div className="flex">
+        <DashboardSidebar />
+
+        <main className="flex-1 lg:ml-64">
             {/* Header */}
             <section className="relative overflow-hidden py-16 md:py-24">
               <MysticalSparkles />
@@ -179,7 +183,8 @@ export default function BookingsClient() {
                 )}
               </div>
             </section>
-      </main>
+        </main>
+      </div>
 
       <BookingDialog
         open={isBookingDialogOpen}

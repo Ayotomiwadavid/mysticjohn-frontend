@@ -12,20 +12,37 @@ import type {
 export const bookingsApi = {
   /**
    * Get all active services
-   * Backend route: bookingRoutes mounted at /api with router.get('/')
-   * This resolves to /api/ (note trailing slash)
+   * Backend route: /api/services or /api/ (for backward compatibility)
+   * Transforms backend format (_id, durationMins, active) to frontend format (id, duration, isActive)
    */
   getServices: async (): Promise<Service[]> => {
-    const response = await apiClient.get<Service[]>('/api/');
-    return response;
+    const response = await apiClient.get<any[]>('/api/services');
+    // Transform backend format to frontend format
+    return response.map((service: any) => ({
+      id: service._id || service.id,
+      name: service.name,
+      description: service.description,
+      price: service.price,
+      duration: service.durationMins || service.duration,
+      isActive: service.active !== undefined ? service.active : service.isActive,
+    }));
   },
 
   /**
    * Get service by ID
    * Backend route: /api/:id (now correctly ordered after specific routes)
+   * Transforms backend format to frontend format
    */
   getService: async (id: string): Promise<Service> => {
-    return apiClient.get<Service>(`/api/${id}`);
+    const service = await apiClient.get<any>(`/api/${id}`);
+    return {
+      id: service._id || service.id,
+      name: service.name,
+      description: service.description,
+      price: service.price,
+      duration: service.durationMins || service.duration,
+      isActive: service.active !== undefined ? service.active : service.isActive,
+    };
   },
 
   /**
