@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Calendar, BookOpen, Users, Star } from 'lucide-react'
+import { Calendar, BookOpen, Users, Star, Sparkles, Layers } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -40,19 +40,27 @@ export function NavigationBlocks() {
       iconColor: 'text-secondary-foreground',
     },
     {
-      href: '/groups',
-      icon: Users,
-      title: 'John Circle',
-      description: 'Join the spiritual circle',
+      href: '/horoscopes',
+      icon: Sparkles,
+      title: 'Daily Horoscopes',
+      description: 'What the stars say today',
       iconClassName: 'bg-primary/10 group-hover:bg-primary/20',
       iconColor: 'text-primary',
+    },
+    {
+      href: '/tarot',
+      icon: Layers,
+      title: 'Daily Tarot Card',
+      description: 'Pick a card, discover yer path',
+      iconClassName: 'bg-accent/10 group-hover:bg-accent/20',
+      iconColor: 'text-accent',
     },
   ]
 
   return (
     <section className="py-16 bg-card/50">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {blocks.map((block) => {
             const Icon = block.icon
             return (

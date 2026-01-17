@@ -44,6 +44,7 @@ export interface User {
   email: string;
   name?: string;
   phone?: string;
+  zodiacSign?: string;
   role?: string;
   createdAt?: string;
   updatedAt?: string;

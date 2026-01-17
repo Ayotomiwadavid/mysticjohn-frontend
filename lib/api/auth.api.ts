@@ -66,7 +66,7 @@ export const authApi = {
   /**
    * Update user profile
    */
-  updateProfile: async (data: { name?: string; phone?: string }): Promise<{ user: User; message: string }> => {
+  updateProfile: async (data: { name?: string; phone?: string; zodiacSign?: string }): Promise<{ user: User; message: string }> => {
     return apiClient.patch<{ user: User; message: string }>('/api/auth/profile', data);
   },
 };

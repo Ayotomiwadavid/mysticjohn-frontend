@@ -50,9 +50,17 @@ export function Navigation() {
               Courses
             </Link>
             {isAuthenticated && (
-              <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Dashboard
-              </Link>
+              <>
+                <Link href="/horoscopes" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Horoscopes
+                </Link>
+                <Link href="/tarot" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Tarot
+                </Link>
+                <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Dashboard
+                </Link>
+              </>
             )}
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
@@ -142,13 +150,29 @@ export function Navigation() {
               Courses
             </Link>
             {isAuthenticated && (
-              <Link
-                href="/dashboard"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
-                onClick={closeMobileMenu}
-              >
-                Dashboard
-              </Link>
+              <>
+                <Link
+                  href="/horoscopes"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                  onClick={closeMobileMenu}
+                >
+                  Horoscopes
+                </Link>
+                <Link
+                  href="/tarot"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                  onClick={closeMobileMenu}
+                >
+                  Tarot
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                  onClick={closeMobileMenu}
+                >
+                  Dashboard
+                </Link>
+              </>
             )}
             {isAuthenticated ? (
               <div className="flex flex-col gap-4 pt-2 border-t border-border/50">
