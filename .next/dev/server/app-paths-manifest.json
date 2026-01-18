@@ -1,4 +1,5 @@
 {
+  "/ai-chat/page": "app/ai-chat/page.js",
   "/bookings/page": "app/bookings/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/horoscopes/page": "app/horoscopes/page.js",

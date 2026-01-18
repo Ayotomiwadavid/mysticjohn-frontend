@@ -21,4 +21,5 @@ export { checkoutApi } from './checkout.api';
 export { adminApi } from './admin.api';
 export { chatApi } from './chat.api';
 export { tarotApi } from './tarot.api';
+export { aiChatApi } from './ai-chat.api';
 

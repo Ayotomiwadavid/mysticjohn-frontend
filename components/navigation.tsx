@@ -57,6 +57,9 @@ export function Navigation() {
                 <Link href="/tarot" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Tarot
                 </Link>
+                <Link href="/ai-chat" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  AI Chat
+                </Link>
                 <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Dashboard
                 </Link>
@@ -164,6 +167,13 @@ export function Navigation() {
                   onClick={closeMobileMenu}
                 >
                   Tarot
+                </Link>
+                <Link
+                  href="/ai-chat"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                  onClick={closeMobileMenu}
+                >
+                  AI Chat
                 </Link>
                 <Link
                   href="/dashboard"

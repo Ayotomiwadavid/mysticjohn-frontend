@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Sparkles, Calendar, Star, BookOpen, MessageSquare, Settings, Home, Coins, Zap, Gem } from 'lucide-react'
+import { Sparkles, Calendar, Star, BookOpen, MessageSquare, Settings, Home, Coins, Zap, Gem, Bot } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useCredits } from '@/lib/hooks'
@@ -15,6 +15,7 @@ const navigation = [
   { name: 'My Bookings', href: '/bookings/my', icon: Calendar },
   { name: 'Horoscopes', href: '/horoscopes', icon: Sparkles },
   { name: 'Tarot', href: '/tarot', icon: Gem },
+  { name: 'AI Chat', href: '/ai-chat', icon: Bot },
   { name: 'Events', href: '/events', icon: Star },
   { name: 'Courses', href: '/courses', icon: BookOpen },
   { name: 'Messages', href: '/messages', icon: MessageSquare },
