@@ -14,11 +14,9 @@ export * from './config';
 export { authApi } from './auth.api';
 export { bookingsApi } from './bookings.api';
 export { coursesApi } from './courses.api';
-export { groupsApi } from './groups.api';
 export { creditsApi } from './credits.api';
 export { checkoutApi } from './checkout.api';
 export { adminApi } from './admin.api';
-export { chatApi } from './chat.api';
 export { tarotApi } from './tarot.api';
 export { aiChatApi } from './ai-chat.api';
 

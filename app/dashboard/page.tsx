@@ -14,7 +14,7 @@ import { useAuthContext } from '@/contexts/AuthContext'
 import { useBookings } from '@/lib/hooks'
 import { useCourses } from '@/lib/hooks'
 import { useCredits } from '@/lib/hooks'
-import { Calendar, BookOpen, Bell, Coins, Plus, Clock, MapPin, Play, Link as LinkIcon, Star } from 'lucide-react'
+import { Calendar, BookOpen, Bell, Coins, Plus, Clock, MapPin, Play, Link as LinkIcon } from 'lucide-react'
 import Link from 'next/link'
 import { format, parseISO, isFuture } from 'date-fns'
 import { BuyCreditsDialog } from '@/components/BuyCreditsDialog'
@@ -287,17 +287,11 @@ export default function DashboardPage() {
                 {/* Quick Actions Row */}
                 <div className="mt-8">
                   <h2 className="text-xl font-bold text-foreground mb-4">Quick Actions</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <Button variant="outline" className="h-auto py-4 flex flex-col gap-2 border-primary/50 hover:bg-primary/10" asChild>
                       <Link href="/bookings">
                         <Calendar className="h-6 w-6 text-primary" />
                         <span className="text-sm font-medium">Book a Reading</span>
-                      </Link>
-                    </Button>
-                    <Button variant="outline" className="h-auto py-4 flex flex-col gap-2 border-accent/50 hover:bg-accent/10" asChild>
-                      <Link href="/groups">
-                        <Star className="h-6 w-6 text-accent" />
-                        <span className="text-sm font-medium">John Circle</span>
                       </Link>
                     </Button>
                     <Button variant="outline" className="h-auto py-4 flex flex-col gap-2 border-primary/50 hover:bg-primary/10" asChild>
