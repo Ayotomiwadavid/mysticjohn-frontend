@@ -1,13 +1,3 @@
-/**
- * API Client - Central export for all API services
- *
- * Usage:
- * import { authApi, bookingsApi, coursesApi } from '@/lib/api';
- *
- * const user = await authApi.login({ email, password });
- * const services = await bookingsApi.getServices();
- */
-
 export * from './types';
 export * from './client';
 export * from './config';
@@ -19,4 +9,3 @@ export { checkoutApi } from './checkout.api';
 export { adminApi } from './admin.api';
 export { tarotApi } from './tarot.api';
 export { aiChatApi } from './ai-chat.api';
-
