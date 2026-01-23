@@ -19,8 +19,10 @@ export const checkoutApi = {
     transactionId: string;
     sessionId?: string | null;
   }): Promise<CheckoutConfirmResponse> => {
-    // Backend expects only sessionId as query parameter
-    const queryParams: Record<string, any> = {};
+    // Backend expects transactionId and optional sessionId as query parameters
+    const queryParams: Record<string, any> = {
+      transactionId: params.transactionId,
+    };
     
     if (params.sessionId) {
       queryParams.sessionId = params.sessionId;
@@ -30,3 +32,5 @@ export const checkoutApi = {
   },
 };
 
+
+// ('/api/checkout/confirm', queryParams)
