@@ -32,7 +32,9 @@ export function useCourses(): UseCoursesReturn {
       setError(null);
       setIsLoading(true);
       const data = await coursesApi.getCourses();
-      setCourses(data);
+      // Handle both direct array and nested data property
+      const coursesData = Array.isArray(data) ? data : (data as any).data || [];
+      setCourses(Array.isArray(coursesData) ? coursesData : []);
     } catch (err) {
       const errorMessage =
         err instanceof ApiClientError
@@ -67,7 +69,9 @@ export function useCourses(): UseCoursesReturn {
       setError(null);
       setIsLoading(true);
       const data = await coursesApi.getMyEnrollments();
-      setEnrollments(data);
+      // Handle both direct array and nested data property
+      const enrollmentsData = Array.isArray(data) ? data : (data as any).data || [];
+      setEnrollments(Array.isArray(enrollmentsData) ? enrollmentsData : []);
     } catch (err) {
       const errorMessage =
         err instanceof ApiClientError

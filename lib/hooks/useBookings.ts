@@ -43,7 +43,9 @@ export function useBookings(): UseBookingsReturn {
       setError(null);
       setIsLoading(true);
       const data = await bookingsApi.getServices();
-      setServices(data);
+      // Handle both direct array and nested data property
+      const servicesData = Array.isArray(data) ? data : (data as any).data || [];
+      setServices(Array.isArray(servicesData) ? servicesData : []);
     } catch (err) {
       const errorMessage =
         err instanceof ApiClientError
@@ -99,7 +101,9 @@ export function useBookings(): UseBookingsReturn {
       setError(null);
       setIsLoading(true);
       const data = await bookingsApi.getMyBookings();
-      setBookings(data);
+      // Handle both direct array and nested data property
+      const bookingsData = Array.isArray(data) ? data : (data as any).data || [];
+      setBookings(Array.isArray(bookingsData) ? bookingsData : []);
     } catch (err) {
       const errorMessage =
         err instanceof ApiClientError
