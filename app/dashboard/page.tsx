@@ -1,24 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { Navigation } from '@/components/navigation'
-import { DashboardSidebar } from '@/components/dashboard-sidebar'
-import { MobileBottomNav } from '@/components/mobile-bottom-nav'
-import { MysticalSparkles } from '@/components/mystical-sparkles'
-import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuthContext } from '@/contexts/AuthContext'
-import { useBookings } from '@/lib/hooks'
-import { useCourses } from '@/lib/hooks'
-import { useCredits } from '@/lib/hooks'
-import { Calendar, BookOpen, Bell, Coins, Plus, Clock, MapPin, Play, Link as LinkIcon } from 'lucide-react'
+import { useBookings, useCourses, useCredits } from '@/lib/hooks'
+import { Calendar, BookOpen, Bell, Coins, Plus, Clock, MapPin, Play, Link as LinkIcon, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { format, parseISO, isFuture } from 'date-fns'
 import { BuyCreditsDialog } from '@/components/BuyCreditsDialog'
-import { useState } from 'react'
 
 export default function DashboardPage() {
   const { user } = useAuthContext();
@@ -73,247 +65,170 @@ export default function DashboardPage() {
   const calculateProgress = (enrollment: any) => {
     if (!enrollment.course?.steps || enrollment.course.steps.length === 0) return 0;
     const totalSteps = enrollment.course.steps.length;
-    const completedSteps = enrollment.progress ? 1 : 0; // Simplified - you may need to adjust based on your data structure
+    const completedSteps = enrollment.progress ? 1 : 0; // Simplified
     return Math.round((completedSteps / totalSteps) * 100);
   };
 
   const isLoading = bookingsLoading || coursesLoading || creditsLoading;
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-background">
-        <Navigation />
+    <div className="space-y-8">
+      {/* Welcome Header */}
+      <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-primary/10 via-purple-500/5 to-transparent p-8 md:p-12 border border-primary/10">
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 blur-3xl rounded-full" />
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-accent/20 blur-3xl rounded-full" />
 
-        <div className="flex">
-          <DashboardSidebar />
+        <div className="relative z-10 max-w-2xl">
+          <Badge variant="outline" className="mb-4 bg-background/50 backdrop-blur-sm border-primary/30 text-primary">
+            <Sparkles className="w-3 h-3 mr-1" />
+            Dashboard
+          </Badge>
+          <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4 tracking-tight">
+            Welcome Back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">{user?.name || 'Lovely Soul'}</span>
+          </h1>
+          <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
+            Here's what's happening in yer wee universe today. Everything is aligned for your growth.
+          </p>
+        </div>
+      </div>
 
-          <main className="flex-1 p-6 lg:p-8 lg:ml-64 pb-20 lg:pb-6">
-            {/* Welcome Header */}
-            <div className="mb-8 relative">
-              <div className="absolute -top-4 -left-4 w-32 h-32 bg-primary/20 blur-3xl rounded-full" />
-              <div className="relative z-10">
-                <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                  Welcome Back, {user?.name || 'Lovely Soul'}
-                </h1>
-                <p className="text-muted-foreground text-lg">
-                  Here's what's happening in yer wee universe today.
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <p className="text-muted-foreground animate-pulse">Consulting the spirits...</p>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Credit Balance Card */}
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-300 group overflow-hidden relative">
+              <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Credit Balance</CardTitle>
+                <Coins className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600">
+                  {user?.credits ?? 0}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1 mb-4">
+                  Available for quick replies & insights
                 </p>
+                <Button
+                  onClick={() => setBuyCreditsOpen(true)}
+                  className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border-0 shadow-none hover:shadow-lg transition-all"
+                >
+                  <Plus className="h-4 w-4 mr-1" /> Top Up Credits
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Next Appointment Card */}
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-300 md:col-span-2 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Calendar className="w-24 h-24 text-primary" />
               </div>
-            </div>
-
-            {isLoading ? (
-              <div className="flex items-center justify-center py-20">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-                  <p className="mt-4 text-muted-foreground">Loading yer dashboard...</p>
-                </div>
-              </div>
-            ) : (
-              <>
-                {/* Dashboard Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                  {/* Credit Balance Card */}
-                  <Card className="border-primary/50 relative overflow-hidden shadow-lg shadow-primary/10">
-                    <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-transparent" />
-                    <MysticalSparkles />
-                    <CardHeader className="relative z-10">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-foreground">Credit Balance</CardTitle>
-                        <Coins className="h-5 w-5 text-primary" />
+              <CardHeader>
+                <CardTitle className="text-xl font-semibold flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-primary" />
+                  Next Appointment
+                </CardTitle>
+                <CardDescription>Your upcoming session details</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {nextBooking ? (
+                  <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between bg-muted/30 p-4 rounded-xl border border-border/50">
+                    <div className="space-y-1">
+                      <h3 className="font-semibold text-lg">{nextBooking.service?.name}</h3>
+                      <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                        <Clock className="w-4 h-4" />
+                        {formatDate(nextBooking.startDateTime)} at {formatTime(nextBooking.startDateTime)}
                       </div>
-                      <CardDescription className="text-muted-foreground">Available for quick replies</CardDescription>
-                    </CardHeader>
-                    <CardContent className="relative z-10">
-                      <div className="flex items-end justify-between">
-                        <div>
-                          <div className="text-4xl font-bold text-primary mb-2">
-                            {user?.credits ?? 0}
-                          </div>
-                          <p className="text-sm text-muted-foreground">Credits remaining</p>
-                        </div>
-                        <Button
-                          size="sm"
-                          className="bg-primary text-primary-foreground hover:bg-primary/90"
-                          onClick={() => setBuyCreditsOpen(true)}
-                        >
-                          <Plus className="h-4 w-4 mr-1" />
-                          Buy More
-                        </Button>
+                      <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                        {nextBooking.type === 'ONLINE' ? <LinkIcon className="w-4 h-4" /> : <MapPin className="w-4 h-4" />}
+                        {nextBooking.type === 'ONLINE' ? 'Online Meeting' : 'In Person'}
                       </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Upcoming Appointments Card */}
-                  <Card className="border-border/50 hover:border-accent/50 transition-colors">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-foreground">Next Appointment</CardTitle>
-                        <Calendar className="h-5 w-5 text-accent" />
-                      </div>
-                      <CardDescription className="text-muted-foreground">
-                        {nextBooking?.service?.name || 'No upcoming appointments'}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      {nextBooking ? (
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Clock className="h-4 w-4" />
-                            <span>{formatDate(nextBooking.startDateTime)} at {formatTime(nextBooking.startDateTime)}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            {nextBooking.type === 'ONLINE' ? (
-                              <>
-                                <LinkIcon className="h-4 w-4" />
-                                <span>Online</span>
-                              </>
-                            ) : (
-                              <>
-                                <MapPin className="h-4 w-4" />
-                                <span>In Person</span>
-                              </>
-                            )}
-                          </div>
-                          <Button size="sm" variant="outline" className="w-full mt-2 border-accent/50 hover:bg-accent/10" asChild>
-                            <Link href="/bookings">View Details</Link>
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <p className="text-sm text-muted-foreground">No upcoming appointments</p>
-                          <Button size="sm" variant="outline" className="w-full mt-2 border-accent/50 hover:bg-accent/10" asChild>
-                            <Link href="/bookings">Book a Reading</Link>
-                          </Button>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                </div>
-
-                {/* Two Column Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Courses in Progress */}
-                  <Card className="lg:col-span-2 border-border/50">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-foreground">Courses in Progress</CardTitle>
-                        <BookOpen className="h-5 w-5 text-primary" />
-                      </div>
-                      <CardDescription className="text-muted-foreground">Keep learning, lovely soul</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      {enrollments && enrollments.length > 0 ? (
-                        enrollments.slice(0, 2).map((enrollment) => {
-                          const progress = calculateProgress(enrollment);
-                          const totalSteps = enrollment.course?.steps?.length || 0;
-                          const completedSteps = Math.round((progress / 100) * totalSteps);
-
-                          return (
-                            <div key={enrollment.id} className="space-y-3">
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <h4 className="font-medium text-foreground">
-                                    {enrollment.course?.title || 'Course'}
-                                  </h4>
-                                  <p className="text-sm text-muted-foreground">
-                                    {completedSteps} of {totalSteps} lessons completed
-                                  </p>
-                                </div>
-                                <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-                                  <Link href={`/courses/${enrollment.courseId}`}>
-                                    <Play className="h-4 w-4 mr-1" />
-                                    Continue
-                                  </Link>
-                                </Button>
-                              </div>
-                              <Progress value={progress} className="h-2" />
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="text-center py-8">
-                          <p className="text-muted-foreground mb-4">No courses enrolled yet</p>
-                          <Button variant="outline" className="border-primary/50 hover:bg-primary/10" asChild>
-                            <Link href="/courses">Browse Courses</Link>
-                          </Button>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  {/* Community Notifications */}
-                  <Card className="border-border/50">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-foreground">Notifications</CardTitle>
-                        <Bell className="h-5 w-5 text-accent" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {/* Placeholder notifications - you can integrate with your notification system later */}
-                      <div className="flex gap-3">
-                        <div className="h-2 w-2 rounded-full bg-primary mt-2 shrink-0" />
-                        <div>
-                          <p className="text-sm text-foreground">Welcome to John Spratt Psychic Medium!</p>
-                          <p className="text-xs text-muted-foreground">Just now</p>
-                        </div>
-                      </div>
-                      {nextBooking && (
-                        <div className="flex gap-3">
-                          <div className="h-2 w-2 rounded-full bg-accent mt-2 shrink-0" />
-                          <div>
-                            <p className="text-sm text-foreground">Upcoming: {nextBooking.service?.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {nextBooking.startDateTime ? formatDate(nextBooking.startDateTime) : ''}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                      {enrollments && enrollments.length > 0 && (
-                        <div className="flex gap-3">
-                          <div className="h-2 w-2 rounded-full bg-muted mt-2 shrink-0" />
-                          <div>
-                            <p className="text-sm text-foreground">Continue yer courses</p>
-                            <p className="text-xs text-muted-foreground">You have {enrollments.length} course{enrollments.length !== 1 ? 's' : ''} in progress</p>
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Quick Actions Row */}
-                <div className="mt-8">
-                  <h2 className="text-xl font-bold text-foreground mb-4">Quick Actions</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <Button variant="outline" className="h-auto py-4 flex flex-col gap-2 border-primary/50 hover:bg-primary/10" asChild>
-                      <Link href="/bookings">
-                        <Calendar className="h-6 w-6 text-primary" />
-                        <span className="text-sm font-medium">Book a Reading</span>
-                      </Link>
-                    </Button>
-                    <Button variant="outline" className="h-auto py-4 flex flex-col gap-2 border-primary/50 hover:bg-primary/10" asChild>
-                      <Link href="/courses">
-                        <BookOpen className="h-6 w-6 text-primary" />
-                        <span className="text-sm font-medium">Continue Course</span>
-                      </Link>
-                    </Button>
-                    <Button variant="outline" className="h-auto py-4 flex flex-col gap-2 border-accent/50 hover:bg-accent/10" asChild>
-                      <Link href="/dashboard">
-                        <Coins className="h-6 w-6 text-accent" />
-                        <span className="text-sm font-medium">Spend a Credit</span>
-                      </Link>
+                    </div>
+                    <Button variant="default" asChild className="shrink-0">
+                      <Link href={`/bookings/${nextBooking.id}`}>Join Session</Link>
                     </Button>
                   </div>
+                ) : (
+                  <div className="text-center py-6 flex flex-col items-center justify-center space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                      <Calendar className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <p className="font-medium">No upcoming appointments</p>
+                      <p className="text-sm text-muted-foreground">Ready to explore your path?</p>
+                    </div>
+                    <Button variant="outline" asChild className="mt-2">
+                      <Link href="/bookings/new">Book a Reading</Link>
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Notifications / Updates */}
+            <Card className="col-span-1 lg:col-span-2 border-border/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5 text-accent" />
+                  Updates
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="w-2 h-2 rounded-full bg-primary mt-2 shrink-0 animate-pulse" />
+                  <div>
+                    <p className="font-medium text-sm">Welcome to the new dashboard!</p>
+                    <p className="text-muted-foreground text-xs mt-1">We've updated the look and feel to help you navigate better.</p>
+                    <p className="text-xs text-muted-foreground mt-2 opacity-70">Just now</p>
+                  </div>
                 </div>
-              </>
-            )}
-          </main>
-        </div>
-        <MobileBottomNav />
-      </div>
+                {enrollments && enrollments.length > 0 && (
+                  <div className="flex gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 shrink-0" />
+                    <div>
+                      <p className="font-medium text-sm">Keep Learning</p>
+                      <p className="text-muted-foreground text-xs mt-1">You have {enrollments.length} active courses. Continue where you left off!</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-3">
+                <Link href="/bookings/new" className="flex flex-col items-center justify-center p-4 rounded-xl border border-border/50 hover:bg-primary/5 hover:border-primary/30 transition-all group text-center space-y-2">
+                  <Calendar className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="text-xs font-medium">Book Reading</span>
+                </Link>
+                <Link href="/courses" className="flex flex-col items-center justify-center p-4 rounded-xl border border-border/50 hover:bg-primary/5 hover:border-primary/30 transition-all group text-center space-y-2">
+                  <BookOpen className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="text-xs font-medium">My Courses</span>
+                </Link>
+                <Link href="/ai-chat" className="flex flex-col items-center justify-center p-4 rounded-xl border border-border/50 hover:bg-primary/5 hover:border-primary/30 transition-all group text-center space-y-2">
+                  <Sparkles className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="text-xs font-medium">Ask AI</span>
+                </Link>
+                <div onClick={() => setBuyCreditsOpen(true)} className="cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl border border-border/50 hover:bg-primary/5 hover:border-primary/30 transition-all group text-center space-y-2">
+                  <Coins className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span className="text-xs font-medium">Buy Credits</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
       <BuyCreditsDialog open={buyCreditsOpen} onOpenChange={setBuyCreditsOpen} />
-    </ProtectedRoute>
+    </div>
   )
 }

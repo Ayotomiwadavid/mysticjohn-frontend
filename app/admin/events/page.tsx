@@ -68,11 +68,66 @@ export default function AdminEventsPage() {
         setIsDialogOpen(true);
     };
 
-    // ...
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this event?')) return;
+        try {
+            await eventsApi.deleteEvent(id);
+            toast.success('Event deleted successfully');
+            fetchEvents();
+        } catch (error) {
+            console.error('Failed to delete event:', error);
+            toast.error('Failed to delete event');
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            const data = {
+                ...formData,
+                isOnline: !!formData.googleMeetLink,
+            };
+
+            if (editingEvent) {
+                await eventsApi.updateEvent(editingEvent.id, data);
+                toast.success('Event updated successfully');
+            } else {
+                await eventsApi.createEvent(data);
+                toast.success('Event created successfully');
+            }
+
+            setIsDialogOpen(false);
+            resetForm();
+            fetchEvents();
+        } catch (error) {
+            console.error('Failed to save event:', error);
+            toast.error('Failed to save event');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
-        // ...
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <ProtectedAdminRoute>
+            <div className="container mx-auto py-10 space-y-8">
+                <div className="flex justify-between items-center">
+                    <h1 className="text-3xl font-bold tracking-tight">Events</h1>
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button onClick={resetForm}>
+                                <Plus className="mr-2 h-4 w-4" /> Create Event
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                                <DialogTitle>{editingEvent ? 'Edit Event' : 'Create Event'}</DialogTitle>
+                                <DialogDescription>
+                                    {editingEvent ? 'Make changes to the event here.' : 'Add a new event to the schedule.'}
+                                </DialogDescription>
+                            </DialogHeader>
+                            <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-2">
                 <Label htmlFor="title">Event Title</Label>
                 <Input
@@ -169,9 +224,9 @@ export default function AdminEventsPage() {
                 </Button>
             </DialogFooter>
         </form>
-                    </DialogContent >
-                </Dialog >
-            </div >
+                    </DialogContent>
+                </Dialog>
+            </div>
 
         <Card>
             <CardHeader>
@@ -239,6 +294,7 @@ export default function AdminEventsPage() {
                 )}
             </CardContent>
         </Card>
-        </div >
+        </div>
+        </ProtectedAdminRoute>
     );
 }
