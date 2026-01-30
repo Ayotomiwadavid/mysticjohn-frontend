@@ -21,4 +21,12 @@ export const messagesApi = {
   getMyQuestions: async (): Promise<QuickQuestion[]> => {
     return apiClient.get<QuickQuestion[]>('/api/messages/my');
   },
+
+  /**
+   * Admin: Get all questions
+   */
+  getAllQuestions: async (): Promise<QuickQuestion[]> => {
+    const response = await apiClient.get<any>('/api/admin/messages');
+    return Array.isArray(response) ? response : (response.messages || []);
+  },
 };

@@ -32,16 +32,9 @@ export default function AdminCreditPacksPage() {
     updateCreditPack,
     deleteCreditPack,
   } = useAdminCredits();
-  const { user, logout } = useAuthContext();
-  const router = useRouter();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingPack, setEditingPack] = useState<CreditPack | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
-
-  const handleLogout = async () => {
-    await logout();
-    router.push('/admin/login');
-  };
 
   useEffect(() => {
     fetchAllCreditPacks();
@@ -70,168 +63,138 @@ export default function AdminCreditPacksPage() {
   };
 
   return (
-    <ProtectedAdminRoute>
-      <div className="min-h-screen bg-background">
-        {/* Header */}
-        <header className="border-b border-border/50 bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Link href="/admin/dashboard">
-                  <Button variant="ghost" size="sm">
-                    ← Back
-                  </Button>
-                </Link>
-                <Shield className="h-6 w-6 text-primary" />
-                <h1 className="text-2xl font-bold text-foreground">Credit Packs</h1>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="text-sm text-muted-foreground hidden md:block">
-                  {user?.name || user?.email}
+    <div>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Credit Packs</h1>
+          <p className="text-muted-foreground">Manage credit packs available for purchase</p>
+        </div>
+        <Button
+          onClick={() => setIsCreateDialogOpen(true)}
+          className="bg-primary text-primary-foreground hover:bg-primary/90"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Create Pack
+        </Button>
+      </div>
+
+      {error && (
+        <div className="mb-4 p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+          {error}
+        </div>
+      )}
+
+      {isLoading && creditPacks.length === 0 ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : creditPacks.length === 0 ? (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <Coins className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">No credit packs found.</p>
+            <Button
+              onClick={() => setIsCreateDialogOpen(true)}
+              className="mt-4"
+              variant="outline"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create First Pack
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {creditPacks.map((pack) => (
+            <Card
+              key={pack.id}
+              className={`border-primary/20 hover:border-primary/40 transition-all ${!pack.isActive ? 'opacity-60' : ''
+                }`}
+            >
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-xl">{pack.name}</CardTitle>
+                    <CardDescription>
+                      {pack.description || 'Credit pack'}
+                    </CardDescription>
+                  </div>
+                  <Badge variant={pack.isActive ? 'default' : 'secondary'}>
+                    {pack.isActive ? 'Active' : 'Inactive'}
+                  </Badge>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="border-primary/50 hover:bg-primary/10"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Button>
-                <Button
-                  onClick={() => setIsCreateDialogOpen(true)}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Pack
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="container mx-auto px-4 py-8">
-          {error && (
-            <div className="mb-4 p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-              {error}
-            </div>
-          )}
-
-          {isLoading && creditPacks.length === 0 ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : creditPacks.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <Coins className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">No credit packs found.</p>
-                <Button
-                  onClick={() => setIsCreateDialogOpen(true)}
-                  className="mt-4"
-                  variant="outline"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create First Pack
-                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Credits</span>
+                    <span className="text-lg font-semibold">{pack.credits}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Price</span>
+                    <span className="text-lg font-semibold">
+                      {formatPrice(pack.price, 'GBP')}
+                    </span>
+                  </div>
+                  <div className="pt-3 border-t border-border/50 flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => setEditingPack(pack)}
+                    >
+                      <Edit className="h-4 w-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 text-destructive hover:text-destructive"
+                      onClick={() => handleDelete(pack.id)}
+                      disabled={isDeleting === pack.id}
+                    >
+                      {isDeleting === pack.id ? (
+                        <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4 mr-1" />
+                      )}
+                      Delete
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {creditPacks.map((pack) => (
-                <Card
-                  key={pack.id}
-                  className={`border-primary/20 hover:border-primary/40 transition-all ${
-                    !pack.isActive ? 'opacity-60' : ''
-                  }`}
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-xl">{pack.name}</CardTitle>
-                        <CardDescription>
-                          {pack.description || 'Credit pack'}
-                        </CardDescription>
-                      </div>
-                      <Badge variant={pack.isActive ? 'default' : 'secondary'}>
-                        {pack.isActive ? 'Active' : 'Inactive'}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Credits</span>
-                        <span className="text-lg font-semibold">{pack.credits}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Price</span>
-                        <span className="text-lg font-semibold">
-                          {formatPrice(pack.price, 'GBP')}
-                        </span>
-                      </div>
-                      <div className="pt-3 border-t border-border/50 flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1"
-                          onClick={() => setEditingPack(pack)}
-                        >
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 text-destructive hover:text-destructive"
-                          onClick={() => handleDelete(pack.id)}
-                          disabled={isDeleting === pack.id}
-                        >
-                          {isDeleting === pack.id ? (
-                            <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                          ) : (
-                            <Trash2 className="h-4 w-4 mr-1" />
-                          )}
-                          Delete
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </main>
+          ))}
+        </div>
+      )}
 
-        {/* Create/Edit Dialog */}
-        <CreditPackDialog
-          open={isCreateDialogOpen || editingPack !== null}
-          onOpenChange={(open) => {
-            if (!open) {
-              setIsCreateDialogOpen(false);
+      {/* Create/Edit Dialog */}
+      <CreditPackDialog
+        open={isCreateDialogOpen || editingPack !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsCreateDialogOpen(false);
+            setEditingPack(null);
+          }
+        }}
+        pack={editingPack}
+        onSave={async (data) => {
+          if (editingPack) {
+            const result = await updateCreditPack(editingPack.id, data);
+            if (result) {
+              toast.success('Credit pack updated successfully');
               setEditingPack(null);
             }
-          }}
-          pack={editingPack}
-          onSave={async (data) => {
-            if (editingPack) {
-              const result = await updateCreditPack(editingPack.id, data);
-              if (result) {
-                toast.success('Credit pack updated successfully');
-                setEditingPack(null);
-              }
-            } else {
-              const result = await createCreditPack(data);
-              if (result) {
-                toast.success('Credit pack created successfully');
-                setIsCreateDialogOpen(false);
-              }
+          } else {
+            const result = await createCreditPack(data);
+            if (result) {
+              toast.success('Credit pack created successfully');
+              setIsCreateDialogOpen(false);
             }
-          }}
-        />
-      </div>
-    </ProtectedAdminRoute>
+          }
+        }}
+      />
+    </div>
   );
 }
 

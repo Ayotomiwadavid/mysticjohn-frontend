@@ -4,6 +4,8 @@ import type {
   AvailabilitySlot,
   CreateBookingRequest,
   Booking,
+  CreateServiceRequest,
+  UpdateServiceRequest,
 } from './types';
 
 /**
@@ -24,7 +26,7 @@ export const bookingsApi = {
       description: service.description,
       price: service.price,
       duration: service.durationMins || service.duration,
-      isActive: service.active !== undefined ? service.active : service.isActive,
+      active: service.active !== undefined ? service.active : service.isActive,
     }));
   },
 
@@ -41,7 +43,7 @@ export const bookingsApi = {
       description: service.description,
       price: service.price,
       duration: service.durationMins || service.duration,
-      isActive: service.active !== undefined ? service.active : service.isActive,
+      active: service.active !== undefined ? service.active : service.isActive,
     };
   },
 
@@ -99,5 +101,38 @@ export const bookingsApi = {
    */
   cancelBooking: async (id: string): Promise<void> => {
     return apiClient.delete<void>(`/api/bookings/${id}`);
+  },
+
+  /**
+   * Admin: Get all bookings
+   */
+  getAllBookings: async (): Promise<Booking[]> => {
+    const response = await apiClient.get<any[]>('/api/bookings/admin/all');
+    // Transform backend format to frontend format
+    return response.map((booking: any) => ({
+      ...booking,
+      id: booking._id || booking.id,
+    }));
+  },
+
+  /**
+   * Admin: Create Service
+   */
+  createService: async (data: CreateServiceRequest): Promise<Service> => {
+    return apiClient.post<Service>('/api/bookings/services', data);
+  },
+
+  /**
+   * Admin: Update Service
+   */
+  updateService: async (id: string, data: UpdateServiceRequest): Promise<Service> => {
+    return apiClient.patch<Service>(`/api/bookings/services/${id}`, data);
+  },
+
+  /**
+   * Admin: Delete Service
+   */
+  deleteService: async (id: string): Promise<void> => {
+    return apiClient.delete<void>(`/api/bookings/services/${id}`);
   },
 };

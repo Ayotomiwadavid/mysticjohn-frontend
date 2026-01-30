@@ -15,5 +15,6 @@ export { useAuth } from './useAuth';
 export { useBookings } from './useBookings';
 export { useCourses } from './useCourses';
 export { useCredits } from './useCredits';
+export * from './useEvents';
 export { useCheckout } from './useCheckout';
 export { useAdminCredits } from './useAdminCredits';

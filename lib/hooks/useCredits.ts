@@ -42,42 +42,8 @@ export function useCredits(): UseCreditsReturn {
     try {
       setError(null);
       setIsLoading(true);
-      // Use local data instead of API
-      const localPacks: CreditPack[] = [
-        {
-          id: 'pack_starter',
-          name: 'Starter Pack',
-          description: 'Perfect for a quick question',
-          credits: 5,
-          price: 4.99,
-          isActive: true
-        },
-        {
-          id: 'pack_seeker',
-          name: 'Seeker Pack',
-          description: 'Explore deeper meanings',
-          credits: 15,
-          price: 12.99,
-          isActive: true
-        },
-        // {
-        //   id: 'pack_mystic',
-        //   name: 'Mystic Pack',
-        //   description: 'For serious spiritual guidance',
-        //   credits: 30,
-        //   price: 24.99,
-        //   isActive: true
-        // },
-        // {
-        //   id: 'pack_divine',
-        //   name: 'Divine Pack',
-        //   description: 'Ultimate spiritual connection',
-        //   credits: 60,
-        //   price: 49.99,
-        //   isActive: true
-        // }
-      ];
-      setCreditPacks(localPacks);
+            const data = await creditsApi.getAllCreditPacks();
+            setCreditPacks(data);
     } catch (err) {
       console.error('Error setting local credit packs:', err);
       setError('Failed to load credit packs.');
@@ -91,7 +57,7 @@ export function useCredits(): UseCreditsReturn {
       setError(null);
       setIsLoading(true);
       const data = await authApi.getMe();
-      setBalance(data.credits);
+      setBalance(data);
     } catch (err) {
       const errorMessage =
         err instanceof ApiClientError

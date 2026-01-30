@@ -37,5 +37,16 @@ function AvatarFallback({ className, children, ...props }: AvatarFallbackProps) 
   );
 }
 
-export { Avatar, AvatarFallback };
+interface AvatarImageProps extends React.ImgHTMLAttributes<HTMLImageElement> { }
+
+function AvatarImage({ className, ...props }: AvatarImageProps) {
+  return (
+    <img
+      className={cn("aspect-square h-full w-full", className)}
+      {...props}
+    />
+  )
+}
+
+export { Avatar, AvatarImage, AvatarFallback };
 

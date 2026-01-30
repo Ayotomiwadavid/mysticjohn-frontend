@@ -21,7 +21,7 @@ interface BuyCreditsDialogProps {
 }
 
 export function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialogProps) {
-  const { creditPacks, fetchCreditPacks, isLoading: creditsLoading } = useCredits();
+  const { creditPacks, fetchCreditPacks, isLoading: creditsLoading, error: creditsError } = useCredits();
   const { checkout, isLoading: checkoutLoading, error: checkoutError, clearError } = useCheckout();
   const [selectedPack, setSelectedPack] = useState<string | null>(null);
 
@@ -109,7 +109,11 @@ export function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialogProps) 
           </DialogDescription>
         </DialogHeader>
 
-        {creditsLoading ? (
+        {creditsError ? (
+          <div className="text-center py-12 text-destructive">
+            {creditsError}
+          </div>
+        ) : creditsLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
@@ -119,8 +123,13 @@ export function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialogProps) 
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-4">
+            {creditPacks.filter((pack) => pack.active).length === 0 && (
+              <div className="col-span-full text-center py-12 text-muted-foreground">
+                No active credit packs available.
+              </div>
+            )}
             {creditPacks
-              .filter((pack) => pack.isActive)
+              .filter((pack) => pack.active)
               .map((pack) => {
                 const pricePerCredit = calculateValue(pack);
                 const isPurchasing = selectedPack === pack.id && checkoutLoading;

@@ -40,22 +40,22 @@ export function Navigation() {
             <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Home
             </Link>
-            <Link href="/bookings" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Bookings
+            <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              About
             </Link>
-            <Link href="/courses" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Courses
+            <Link href="/services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Services
+            </Link>
+            <Link href="/events" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Events
+            </Link>
+            <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Contact
             </Link>
             {isAuthenticated && (
               <>
-                <Link href="/horoscopes" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Horoscopes
-                </Link>
-                <Link href="/tarot" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Tarot
-                </Link>
-                <Link href="/ai-chat" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  AI Chat
+                <Link href="/community" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Community
                 </Link>
                 <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Dashboard
@@ -64,9 +64,6 @@ export function Navigation() {
             )}
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
-                {/* <span className="text-sm text-muted-foreground">
-                  {user?.name || user?.email}
-                </span> */}
                 <Button
                   size="sm"
                   variant="outline"
@@ -129,41 +126,41 @@ export function Navigation() {
               Home
             </Link>
             <Link
-              href="/bookings"
+              href="/about"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
               onClick={closeMobileMenu}
             >
-              Bookings
+              About
             </Link>
             <Link
-              href="/courses"
+              href="/services"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
               onClick={closeMobileMenu}
             >
-              Courses
+              Services
+            </Link>
+            <Link
+              href="/events"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+              onClick={closeMobileMenu}
+            >
+              Events
+            </Link>
+            <Link
+              href="/contact"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+              onClick={closeMobileMenu}
+            >
+              Contact
             </Link>
             {isAuthenticated && (
               <>
                 <Link
-                  href="/horoscopes"
+                  href="/community"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
                   onClick={closeMobileMenu}
                 >
-                  Horoscopes
-                </Link>
-                <Link
-                  href="/tarot"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
-                  onClick={closeMobileMenu}
-                >
-                  Tarot
-                </Link>
-                <Link
-                  href="/ai-chat"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
-                  onClick={closeMobileMenu}
-                >
-                  AI Chat
+                  Community
                 </Link>
                 <Link
                   href="/dashboard"

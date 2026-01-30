@@ -12,15 +12,21 @@ export const creditsApi = {
   /**
    * Get all active credit packs
    */
-  getCreditPacks: async (): Promise<CreditPack[]> => {
-    return apiClient.get<CreditPack[]>('/api/credit-packs');
+  getAllCreditPacks: async (): Promise<CreditPack[]> => {
+    const response = await apiClient.get<any>('/api/credit-packs');
+    if (Array.isArray(response)) {
+      return response;
+    }
+    const data = response.data || response.creditPacks;
+    return Array.isArray(data) ? data : [];
   },
 
   /**
    * Get credit transaction history
    */
   getCreditTransactions: async (): Promise<CreditTransaction[]> => {
-    return apiClient.get<CreditTransaction[]>('/api/credits/transactions');
+    const response = await apiClient.get<any>('/api/credits/transactions');
+    return response.data || response;
   },
 };
 

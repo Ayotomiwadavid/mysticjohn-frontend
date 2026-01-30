@@ -10,4 +10,6 @@ export { checkoutApi } from './checkout.api';
 export { adminApi } from './admin.api';
 export { tarotApi } from './tarot.api';
 export { horoscopeApi } from './horoscopes.api';
+export { eventsApi } from './events.api';
 export { aiChatApi } from './ai-chat.api';
+export { communityApi } from './community.api';

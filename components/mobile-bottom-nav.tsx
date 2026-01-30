@@ -25,6 +25,7 @@ const showOnRoutes = [
   '/courses',
   '/settings',
   '/messages',
+  '/community',
 ];
 
 export function MobileBottomNav() {

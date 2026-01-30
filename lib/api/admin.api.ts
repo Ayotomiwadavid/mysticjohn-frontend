@@ -14,7 +14,8 @@ export const adminApi = {
     if (Array.isArray(response)) {
       return response;
     }
-    return response.data || response.creditPacks || [];
+    const data = response.data || response.creditPacks;
+    return Array.isArray(data) ? data : [];
   },
 
   /**
@@ -61,6 +62,14 @@ export const adminApi = {
    */
   deleteCreditPack: async (id: string): Promise<void> => {
     return apiClient.delete(`/api/admin/credit-packs/${id}`);
+  },
+
+  /**
+   * Get all users
+   */
+  getUsers: async (): Promise<any[]> => {
+    const response = await apiClient.get<any>('/api/admin/users');
+    return Array.isArray(response) ? response : (response.users || []);
   },
 };
 

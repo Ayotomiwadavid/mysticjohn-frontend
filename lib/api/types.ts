@@ -61,7 +61,7 @@ export interface Service {
   description?: string;
   price: number;
   duration: number;
-  isActive: boolean;
+  active: boolean;
 }
 
 export interface AvailabilitySlot {
@@ -100,6 +100,12 @@ export interface Course {
   description?: string;
   price: number;
   coverImageUrl?: string;
+  image?: string; // Mapped from user request
+  instructor?: string;
+  duration?: number;
+  level?: 'beginner' | 'intermediate' | 'advanced';
+  category?: string;
+  lessonCount?: number;
   isPublished: boolean;
   steps?: CourseStep[];
   enrollmentStatus?: 'ENROLLED' | 'NOT_ENROLLED';
@@ -136,6 +142,42 @@ export interface UpdateProgressRequest {
   progressData?: Record<string, any>;
 }
 
+export interface CreateCourseRequest {
+  title: string;
+  description: string;
+  instructor?: string;
+  price: number;
+  duration?: number;
+  level?: 'beginner' | 'intermediate' | 'advanced';
+  category?: string;
+  image?: string;
+  coverImageUrl?: string; // Keeping for backward compatibility or mapping
+  lessonCount?: number;
+  isPublished?: boolean;
+}
+
+export interface UpdateCourseRequest extends Partial<CreateCourseRequest> { }
+
+export interface CreateStepRequest {
+  title: string;
+  contentType: 'TEXT' | 'VIDEO' | 'LINK' | 'FILE';
+  content: string;
+}
+
+export interface UpdateStepRequest extends Partial<CreateStepRequest> {
+  orderIndex?: number;
+}
+
+export interface CreateServiceRequest {
+  name: string;
+  description: string;
+  price: number;
+  duration: number; // in minutes
+  active?: boolean;
+}
+
+export interface UpdateServiceRequest extends Partial<CreateServiceRequest> { }
+
 /**
  * Credit Types
  */
@@ -145,7 +187,7 @@ export interface CreditPack {
   description?: string;
   credits: number;
   price: number;
-  isActive: boolean;
+  active: boolean;
 }
 
 export interface CreditBalance {
@@ -186,12 +228,14 @@ export interface SubmitQuestionsRequest {
  * Checkout Types
  */
 export interface CheckoutRequest {
-  itemType: 'course' | 'credits';
+  itemType: 'course' | 'credits' | 'event';
   courseId?: string;
   creditPackId?: string;
+  eventId?: string;
   amount?: number;
   price?: number;
   credits?: number;
+  quantity?: number;
 }
 
 export interface CheckoutResponse {
@@ -227,3 +271,96 @@ export interface CheckoutConfirmResponse {
   sessionId?: string;
 }
 
+
+/**
+ * Event Types
+ */
+export interface Event {
+  id: string;
+  title: string;
+  description?: string;
+  startDateTime: string;
+  endDateTime?: string;
+  location?: string;
+  isOnline: boolean;
+  meetingLink?: string;
+  coverImageUrl?: string;
+  price: number;
+  capacity?: number;
+  availableTickets?: number;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Ticket {
+  id: string;
+  eventId: string;
+  event?: Event;
+  userId: string;
+  status: 'VALID' | 'USED' | 'CANCELLED';
+  purchaseDate: string;
+  qrCode?: string;
+}
+
+export interface CreateEventRequest {
+  title: string;
+  description?: string;
+  eventType: string; // From user request
+  price: number;
+  date: string; // From user request
+  startDateTime?: string; // Keeping for compatibility or mapping
+  endDateTime?: string;
+  location?: string;
+  isOnline?: boolean;
+  capacity?: number;
+  googleMeetLink?: string; // From user request
+  coverImageUrl?: string;
+}
+
+export interface UpdateEventRequest extends Partial<CreateEventRequest> {
+  isPublished?: boolean;
+}
+
+/**
+ * Community Types
+ */
+export interface Post {
+  id: string;
+  userId: string;
+  user?: User;
+  content: string;
+  mediaUrl?: string;
+  mediaType?: 'IMAGE' | 'VIDEO';
+  tags?: string[];
+  likesCount: number;
+  commentsCount: number;
+  isLiked?: boolean; // For current user
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Comment {
+  id: string;
+  postId: string;
+  userId: string;
+  user?: User;
+  content: string;
+  createdAt: string;
+}
+
+export interface CreatePostRequest {
+  content: string;
+  mediaUrl?: string;
+  mediaType?: 'IMAGE' | 'VIDEO';
+  tags?: string[];
+}
+
+export interface CreateCommentRequest {
+  content: string;
+}
+
+export interface FeedResponse {
+  posts: Post[];
+  nextCursor?: string;
+}
