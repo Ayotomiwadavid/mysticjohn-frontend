@@ -259,7 +259,7 @@ export default function AdminMessagesPage() {
                                         </div>
 
                                         {/* Admin Reply or Reply Form */}
-                                        {q.adminReply || q.reply || q.status === 'replied' || q.status === 'completed' ? (
+                                        {q.status !== 'pending' && (q.adminReply || q.reply || q.status === 'replied' || q.status === 'completed') ? (
                                             <div className="flex gap-3 justify-end">
                                                 <div className="max-w-[80%]">
                                                     <div className="bg-primary text-primary-foreground p-4 rounded-2xl rounded-tr-none shadow-md">

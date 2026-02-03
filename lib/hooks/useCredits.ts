@@ -107,7 +107,9 @@ export function useCredits(): UseCreditsReturn {
         const newQuestions = rawQuestions.map((q: any) => ({ 
              ...q, 
              id: q.id || q._id,
-             question: q.question || q.message // Map message to question
+             question: q.question || q.message, // Map message to question
+             adminReply: q.adminReply || q.admin_reply,
+             updatedAt: q.updatedAt || q.updated_at
          }));
          setQuestions((prev) => [...newQuestions, ...prev]);
         // Refresh balance after spending credits
@@ -138,7 +140,9 @@ export function useCredits(): UseCreditsReturn {
        const mappedQuestions = rawQuestions.map((q: any) => ({ 
            ...q, 
            id: q.id || q._id,
-           question: q.question || q.message // Map message to question
+           question: q.question || q.message, // Map message to question
+           adminReply: q.adminReply || q.admin_reply,
+           updatedAt: q.updatedAt || q.updated_at
        }));
        setQuestions(mappedQuestions);
     } catch (err) {

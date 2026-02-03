@@ -182,7 +182,7 @@ export default function MessagesPage() {
                             </div>
 
                             {/* Psychic Reply */}
-                            {question.reply ? (
+                            {question.adminReply || question.reply || question.status === 'replied' || question.status === 'completed' ? (
                               <div className="flex justify-start">
                                 <div className="max-w-[80%] rounded-lg p-4 bg-linear-to-br from-accent/10 to-secondary/10 border border-accent/20 relative overflow-hidden">
                                   <div className="absolute top-0 right-0 w-16 h-16 bg-accent/20 blur-xl" />
@@ -192,10 +192,10 @@ export default function MessagesPage() {
                                       <span className="text-xs font-semibold text-foreground">John</span>
                                     </div>
                                     <p className="text-sm text-foreground leading-relaxed mb-2">
-                                      {question.reply.replyText}
+                                      {question.adminReply || question.reply?.replyText || "Reply text not available"}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
-                                      {formatDate(question.reply.repliedAt)}
+                                      {formatDate(question.reply?.repliedAt || question.updatedAt || new Date().toISOString())}
                                     </p>
                                   </div>
                                 </div>

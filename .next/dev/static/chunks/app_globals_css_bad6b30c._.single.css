@@ -2770,6 +2770,10 @@
     padding-bottom: calc(var(--spacing) * 6);
   }
 
+  .pb-11 {
+    padding-bottom: calc(var(--spacing) * 11);
+  }
+
   .pb-20 {
     padding-bottom: calc(var(--spacing) * 20);
   }

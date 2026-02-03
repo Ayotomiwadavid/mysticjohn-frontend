@@ -241,7 +241,8 @@ export interface SubmitQuestionsRequest {
 }
 
 export interface ReplyToQuestionRequest {
-  answer: string;
+  answer?: string;
+  reply?: string;
 }
 
 /**
