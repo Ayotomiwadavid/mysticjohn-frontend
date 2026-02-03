@@ -117,6 +117,10 @@ export default function AdminEventsPage() {
         }
     };
 
+    useEffect(() => {
+        fetchEvents();
+    }, [fetchEvents]);
+
     return (
         <ProtectedAdminRoute>
             <div className="container mx-auto py-10 space-y-8">

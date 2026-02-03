@@ -118,6 +118,7 @@ class ApiClient {
       method: 'GET',
       headers: this.getHeaders(),
       signal: AbortSignal.timeout(API_CONFIG.timeout),
+      cache: 'no-store',
     });
 
     return this.handleResponse<T>(response);
@@ -132,6 +133,22 @@ class ApiClient {
       headers: this.getHeaders(),
       body: data ? JSON.stringify(data) : undefined,
       signal: AbortSignal.timeout(API_CONFIG.timeout),
+      cache: 'no-store',
+    });
+
+    return this.handleResponse<T>(response);
+  }
+
+  /**
+   * Make a PUT request
+   */
+  async put<T>(endpoint: string, data?: any): Promise<T> {
+    const response = await fetch(getApiUrl(endpoint), {
+      method: 'PUT',
+      headers: this.getHeaders(),
+      body: data ? JSON.stringify(data) : undefined,
+      signal: AbortSignal.timeout(API_CONFIG.timeout),
+      cache: 'no-store',
     });
 
     return this.handleResponse<T>(response);
@@ -146,6 +163,7 @@ class ApiClient {
       headers: this.getHeaders(),
       body: data ? JSON.stringify(data) : undefined,
       signal: AbortSignal.timeout(API_CONFIG.timeout),
+      cache: 'no-store',
     });
 
     return this.handleResponse<T>(response);
@@ -159,6 +177,7 @@ class ApiClient {
       method: 'DELETE',
       headers: this.getHeaders(),
       signal: AbortSignal.timeout(API_CONFIG.timeout),
+      cache: 'no-store',
     });
 
     return this.handleResponse<T>(response);

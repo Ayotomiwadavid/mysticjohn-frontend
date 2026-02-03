@@ -26,11 +26,11 @@ export function useEvents(): UseEventsReturn {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchEvents = useCallback(async () => {
+    const fetchEvents = useCallback(async (upcoming: boolean = true) => {
         try {
             setError(null);
             setIsLoading(true);
-            const data = await eventsApi.getEvents();
+            const data = await eventsApi.getEvents(upcoming);
             const eventsData = Array.isArray(data) ? data : (data as any).data || [];
             const mappedEvents = Array.isArray(eventsData) 
                 ? eventsData.map((e: any) => ({ ...e, id: e._id || e.id })) 

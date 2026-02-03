@@ -96,7 +96,7 @@ export default function AdminLoginPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       disabled={isSubmitting}
-                      className="bg-background border-border/50 focus:border-primary/50"
+                      className="bg-background border-input focus:border-primary"
                     />
                   </div>
 

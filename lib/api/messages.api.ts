@@ -2,6 +2,7 @@ import { apiClient } from './client';
 import type {
   QuickQuestion,
   SubmitQuestionsRequest,
+  ReplyToQuestionRequest,
 } from './types';
 
 /**
@@ -26,7 +27,14 @@ export const messagesApi = {
    * Admin: Get all questions
    */
   getAllQuestions: async (): Promise<QuickQuestion[]> => {
-    const response = await apiClient.get<any>('/api/admin/messages');
-    return Array.isArray(response) ? response : (response.messages || []);
+    const response = await apiClient.get<any>('/api/messages');
+    return Array.isArray(response) ? response : (response.data || response.messages || []);
+  },
+
+  /**
+   * Admin: Reply to a question
+   */
+  replyToQuestion: async (id: string, data: ReplyToQuestionRequest): Promise<QuickQuestion> => {
+    return apiClient.post<QuickQuestion>(`/api/messages/${id}/reply`, data);
   },
 };

@@ -10,7 +10,7 @@ const adminNavigation = [
     { name: 'Courses', href: '/admin/courses', icon: BookOpen },
     { name: 'Community', href: '/admin/community', icon: Users },
     { name: 'Credit Packs', href: '/admin/credit-packs', icon: Percent },
-    // { name: 'Questions', href: '/admin/questions', icon: MessageSquare }, // Future
+    { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
     // { name: 'Settings', href: '/admin/settings', icon: Settings }, // Future
 ]
 

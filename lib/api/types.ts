@@ -218,12 +218,14 @@ export interface CreditTransaction {
 export interface QuickQuestion {
   id: string;
   _id?: string;
-  userId: string;
+  userId: string | { _id: string; name: string; email: string };
   question: string;
   message?: string; // API returns message
   reply?: QuickReply;
+  adminReply?: string; // API returns adminReply string directly
   status: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface QuickReply {
@@ -236,6 +238,10 @@ export interface QuickReply {
 
 export interface SubmitQuestionsRequest {
   message: string;
+}
+
+export interface ReplyToQuestionRequest {
+  answer: string;
 }
 
 /**
