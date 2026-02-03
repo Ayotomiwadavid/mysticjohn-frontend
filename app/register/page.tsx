@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { Sparkles } from 'lucide-react';
 
@@ -17,6 +18,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [level, setLevel] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, error, clearError, isAuthenticated } = useAuthContext();
   const router = useRouter();

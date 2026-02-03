@@ -22,6 +22,7 @@ export interface RegisterRequest {
   password: string;
   name?: string;
   phone?: string;
+  level?: string | number;
 }
 
 export interface LoginRequest {

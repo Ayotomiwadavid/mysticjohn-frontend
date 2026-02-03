@@ -99,88 +99,143 @@ class ApiClient {
    * Make a GET request
    */
   async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
-    let url = getApiUrl(endpoint);
+    try {
+      let url = getApiUrl(endpoint);
 
-    if (params) {
-      const searchParams = new URLSearchParams();
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          searchParams.append(key, String(value));
+      if (params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            searchParams.append(key, String(value));
+          }
+        });
+        const queryString = searchParams.toString();
+        if (queryString) {
+          url += `?${queryString}`;
         }
-      });
-      const queryString = searchParams.toString();
-      if (queryString) {
-        url += `?${queryString}`;
       }
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: this.getHeaders(),
+        signal: AbortSignal.timeout(API_CONFIG.timeout),
+        cache: 'no-store',
+      });
+
+      return this.handleResponse<T>(response);
+    } catch (error: any) {
+      if (error.name === 'TimeoutError') {
+        throw new ApiClientError(
+          'Request timed out. The server might be waking up from sleep (cold start). Please try again in a moment.',
+          408,
+          { error: 'TimeoutError' }
+        );
+      }
+      throw error;
     }
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: this.getHeaders(),
-      signal: AbortSignal.timeout(API_CONFIG.timeout),
-      cache: 'no-store',
-    });
-
-    return this.handleResponse<T>(response);
   }
 
   /**
    * Make a POST request
    */
   async post<T>(endpoint: string, data?: any): Promise<T> {
-    const response = await fetch(getApiUrl(endpoint), {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: data ? JSON.stringify(data) : undefined,
-      signal: AbortSignal.timeout(API_CONFIG.timeout),
-      cache: 'no-store',
-    });
+    try {
+      const response = await fetch(getApiUrl(endpoint), {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: data ? JSON.stringify(data) : undefined,
+        signal: AbortSignal.timeout(API_CONFIG.timeout),
+        cache: 'no-store',
+      });
 
-    return this.handleResponse<T>(response);
+      return this.handleResponse<T>(response);
+    } catch (error: any) {
+      if (error.name === 'TimeoutError') {
+        throw new ApiClientError(
+          'Request timed out. The server might be waking up from sleep (cold start). Please try again in a moment.',
+          408,
+          { error: 'TimeoutError' }
+        );
+      }
+      throw error;
+    }
   }
 
   /**
    * Make a PUT request
    */
   async put<T>(endpoint: string, data?: any): Promise<T> {
-    const response = await fetch(getApiUrl(endpoint), {
-      method: 'PUT',
-      headers: this.getHeaders(),
-      body: data ? JSON.stringify(data) : undefined,
-      signal: AbortSignal.timeout(API_CONFIG.timeout),
-      cache: 'no-store',
-    });
+    try {
+      const response = await fetch(getApiUrl(endpoint), {
+        method: 'PUT',
+        headers: this.getHeaders(),
+        body: data ? JSON.stringify(data) : undefined,
+        signal: AbortSignal.timeout(API_CONFIG.timeout),
+        cache: 'no-store',
+      });
 
-    return this.handleResponse<T>(response);
+      return this.handleResponse<T>(response);
+    } catch (error: any) {
+      if (error.name === 'TimeoutError') {
+        throw new ApiClientError(
+          'Request timed out. The server might be waking up from sleep (cold start). Please try again in a moment.',
+          408,
+          { error: 'TimeoutError' }
+        );
+      }
+      throw error;
+    }
   }
 
   /**
    * Make a PATCH request
    */
   async patch<T>(endpoint: string, data?: any): Promise<T> {
-    const response = await fetch(getApiUrl(endpoint), {
-      method: 'PATCH',
-      headers: this.getHeaders(),
-      body: data ? JSON.stringify(data) : undefined,
-      signal: AbortSignal.timeout(API_CONFIG.timeout),
-      cache: 'no-store',
-    });
+    try {
+      const response = await fetch(getApiUrl(endpoint), {
+        method: 'PATCH',
+        headers: this.getHeaders(),
+        body: data ? JSON.stringify(data) : undefined,
+        signal: AbortSignal.timeout(API_CONFIG.timeout),
+        cache: 'no-store',
+      });
 
-    return this.handleResponse<T>(response);
+      return this.handleResponse<T>(response);
+    } catch (error: any) {
+      if (error.name === 'TimeoutError') {
+        throw new ApiClientError(
+          'Request timed out. The server might be waking up from sleep (cold start). Please try again in a moment.',
+          408,
+          { error: 'TimeoutError' }
+        );
+      }
+      throw error;
+    }
   }
 
   /**
    * Make a DELETE request
    */
   async delete<T>(endpoint: string): Promise<T> {
-    const response = await fetch(getApiUrl(endpoint), {
-      method: 'DELETE',
-      headers: this.getHeaders(),
-      signal: AbortSignal.timeout(API_CONFIG.timeout),
-      cache: 'no-store',
-    });
+    try {
+      const response = await fetch(getApiUrl(endpoint), {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+        signal: AbortSignal.timeout(API_CONFIG.timeout),
+        cache: 'no-store',
+      });
 
-    return this.handleResponse<T>(response);
+      return this.handleResponse<T>(response);
+    } catch (error: any) {
+      if (error.name === 'TimeoutError') {
+        throw new ApiClientError(
+          'Request timed out. The server might be waking up from sleep (cold start). Please try again in a moment.',
+          408,
+          { error: 'TimeoutError' }
+        );
+      }
+      throw error;
+    }
   }
 }
 

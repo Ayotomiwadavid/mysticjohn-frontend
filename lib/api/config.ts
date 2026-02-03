@@ -4,7 +4,7 @@
  */
 export const API_CONFIG = {
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://john-spratt.onrender.com',
-  timeout: 30000, // 30 seconds
+  timeout: 120000, // 120 seconds (2 minutes) to handle Render cold starts
 } as const;
 
 /**
