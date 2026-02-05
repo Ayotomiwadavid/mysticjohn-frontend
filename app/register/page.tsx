@@ -29,6 +29,7 @@ export default function RegisterPage() {
     return null;
   }
 
+  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -39,8 +40,6 @@ export default function RegisterPage() {
         email,
         password,
         name,
-        dateOfBirth: "2000-01-01",
-        // Send empty/default values if needed by API, or omit them
       });
       // Registration successful - auth context will handle state update
       // and redirect is handled in the effect or component body check
