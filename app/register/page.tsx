@@ -29,9 +29,19 @@ export default function RegisterPage() {
     return null;
   }
 
-  // Redirect to login and suppress timeout error message
+  // Helper to detect errors that should redirect
+  const shouldRedirectForError = (msg: string) => {
+    const norm = msg.toLowerCase();
+    return (
+      norm.startsWith('request timed out') ||
+      norm.includes('failed to register') ||
+      norm.includes('failedto regiser') ||
+      norm.includes('please try again in a moment')
+    );
+  };
+  // Redirect to login and suppress specific error messages
   useEffect(() => {
-    if (error && error.startsWith('Request timed out')) {
+    if (error && shouldRedirectForError(error)) {
       clearError();
       router.push('/login');
     }
@@ -86,7 +96,7 @@ export default function RegisterPage() {
 
               <CardContent className="relative z-10">
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  {error && !error.startsWith('Request timed out') && (
+                  {error && !shouldRedirectForError(error) && (
                     <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
                       {error}
                     </div>
