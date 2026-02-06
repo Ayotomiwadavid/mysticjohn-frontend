@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Navigation } from '@/components/navigation';
@@ -29,7 +29,14 @@ export default function RegisterPage() {
     return null;
   }
 
-  
+  // Redirect to login and suppress timeout error message
+  useEffect(() => {
+    if (error && error.startsWith('Request timed out')) {
+      clearError();
+      router.push('/login');
+    }
+  }, [error, clearError, router]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -41,12 +48,9 @@ export default function RegisterPage() {
         password,
         name,
       });
-      // Registration successful - auth context will handle state update
-      // and redirect is handled in the effect or component body check
       router.push('/dashboard');
     } catch (err) {
       console.error('Registration failed:', err);
-      // Error is set in auth context
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +86,7 @@ export default function RegisterPage() {
 
               <CardContent className="relative z-10">
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  {error && (
+                  {error && !error.startsWith('Request timed out') && (
                     <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
                       {error}
                     </div>
