@@ -19,16 +19,27 @@ export default function EventsPage() {
         fetchEvents(true); // Fetch upcoming events
     }, [fetchEvents]);
 
-    const formatDate = (dateString: string) => {
+    const formatDate = (dateString?: string) => {
         try {
+            if (!dateString) return 'TBA';
             return format(parseISO(dateString), 'EEEE, MMMM d, yyyy');
         } catch {
-            return dateString;
+            return 'TBA';
         }
     };
 
-    const formatTime = (dateString: string) => {
+    const formatShortDate = (dateString?: string) => {
         try {
+            if (!dateString) return 'TBA';
+            return format(parseISO(dateString), 'MMM d');
+        } catch {
+            return 'TBA';
+        }
+    };
+
+    const formatTime = (dateString?: string) => {
+        try {
+            if (!dateString) return '';
             return format(parseISO(dateString), 'h:mm a');
         } catch {
             return '';
@@ -92,7 +103,8 @@ export default function EventsPage() {
 
                                             {/* Date Badge */}
                                             <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold border border-white/10 shadow-lg">
-                                                {format(parseISO(event.startDateTime), 'MMM d')}
+-                                                {format(parseISO(event.startDateTime), 'MMM d')}
++                                                {formatShortDate(event.startDateTime)}
                                             </div>
                                         </div>
 
@@ -104,7 +116,8 @@ export default function EventsPage() {
                                             </div>
                                             <CardDescription className="flex items-center gap-2 mt-2">
                                                 <Clock className="h-4 w-4" />
-                                                <span>{formatTime(event.startDateTime)}</span>
+-                                                <span>{formatTime(event.startDateTime)}</span>
++                                                <span>{formatTime(event.startDateTime)}</span>
                                             </CardDescription>
                                         </CardHeader>
 
