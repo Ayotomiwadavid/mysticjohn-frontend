@@ -25,6 +25,12 @@ const adaptEvent = (e: any): Event => {
     const meeting = e?.meetingLink ?? e?.googleMeetLink ?? undefined;
     const created = e?.createdAt ?? new Date().toISOString();
     const updated = e?.updatedAt ?? e?.createdAt ?? created;
+    const available =
+        typeof e?.availableTickets === 'number' ? e.availableTickets
+        : typeof e?.availableSlots === 'number' ? e.availableSlots
+        : (typeof e?.capacity === 'number' && typeof e?.ticketsSold === 'number'
+            ? Math.max(0, e.capacity - e.ticketsSold)
+            : undefined);
 
     return {
         id: e?._id ?? e?.id ?? '',
@@ -40,7 +46,7 @@ const adaptEvent = (e: any): Event => {
         coverImageUrl: e?.coverImageUrl,
         price: typeof e?.price === 'number' ? e.price : Number(e?.price ?? 0),
         capacity: e?.capacity,
-        availableTickets: e?.availableTickets,
+        availableTickets: available,
         isPublished: (typeof e?.isPublished === 'boolean' ? e.isPublished : true),
         createdAt: created,
         updatedAt: updated,
