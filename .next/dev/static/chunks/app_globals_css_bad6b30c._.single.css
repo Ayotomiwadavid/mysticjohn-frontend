@@ -3599,6 +3599,18 @@
   }
 
   @media (hover: hover) {
+    .hover\:bg-muted\/30:hover {
+      background-color: var(--muted);
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .hover\:bg-muted\/30:hover {
+        background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+      }
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:bg-muted\/50:hover {
       background-color: var(--muted);
     }
@@ -4393,6 +4405,12 @@
   @media (min-width: 64rem) {
     .lg\:hidden {
       display: none;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .lg\:grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 

@@ -6,23 +6,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { useAuthContext } from '@/contexts/AuthContext'
-import { useBookings, useCourses, useCredits } from '@/lib/hooks'
+import { useBookings, useCourses, useCredits, useEvents } from '@/lib/hooks'
 import { Calendar, BookOpen, Bell, Coins, Plus, Clock, MapPin, Play, Link as LinkIcon, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { format, parseISO, isFuture } from 'date-fns'
 import { BuyCreditsDialog } from '@/components/BuyCreditsDialog'
+import type { Event } from '@/lib/api/types'
 
 export default function DashboardPage() {
   const { user } = useAuthContext();
   const { bookings, fetchBookings, isLoading: bookingsLoading } = useBookings();
   const { enrollments, fetchEnrollments, isLoading: coursesLoading } = useCourses();
+  const { events, fetchEvents, isLoading: eventsLoading } = useEvents();
   const { balance, fetchBalance, isLoading: creditsLoading } = useCredits();
   const [buyCreditsOpen, setBuyCreditsOpen] = useState(false);
 
   useEffect(() => {
     fetchBookings();
     fetchEnrollments();
-  }, [fetchBookings, fetchEnrollments]);
+    fetchEvents(true);
+  }, [fetchBookings, fetchEnrollments, fetchEvents]);
 
   // Get next upcoming booking
   const upcomingBookings = bookings
@@ -43,17 +46,36 @@ export default function DashboardPage() {
 
   const nextBooking = upcomingBookings[0];
 
+  // Get upcoming events (excluding booking types)
+  const upcomingEvents = events
+    .filter((event: Event) => {
+      try {
+        return isFuture(parseISO(event.startDateTime));
+      } catch {
+        return false;
+      }
+    })
+    .sort((a: Event, b: Event) => {
+      try {
+        return parseISO(a.startDateTime).getTime() - parseISO(b.startDateTime).getTime();
+      } catch {
+        return 0;
+      }
+    });
+
   // Format date helper
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'TBA';
     try {
       return format(parseISO(dateString), 'EEEE, MMM d, yyyy');
     } catch {
-      return dateString;
+      return 'TBA';
     }
   };
 
   // Format time helper
-  const formatTime = (dateString: string) => {
+  const formatTime = (dateString?: string) => {
+    if (!dateString) return '';
     try {
       return format(parseISO(dateString), 'h:mm a');
     } catch {
@@ -61,15 +83,39 @@ export default function DashboardPage() {
     }
   };
 
+  // Additional safe helpers for event badges
+  const formatMonth = (dateString?: string) => {
+    if (!dateString) return '';
+    try {
+      return format(parseISO(dateString), 'MMM');
+    } catch {
+      return '';
+    }
+  };
+
+  const formatDay = (dateString?: string) => {
+    if (!dateString) return '';
+    try {
+      return format(parseISO(dateString), 'd');
+    } catch {
+      return '';
+    }
+  };
   // Calculate course progress
   const calculateProgress = (enrollment: any) => {
     if (!enrollment.course?.steps || enrollment.course.steps.length === 0) return 0;
+    // For now use a simplified calculation or actual progress if available
     const totalSteps = enrollment.course.steps.length;
-    const completedSteps = enrollment.progress ? 1 : 0; // Simplified
-    return Math.round((completedSteps / totalSteps) * 100);
+    // If we have progress object, we can count completed steps
+    // Assuming enrollment.progress might be an array or object
+    const completedSteps = Array.isArray(enrollment.progress)
+      ? enrollment.progress.length
+      : (enrollment.progress ? 1 : 0);
+
+    return Math.min(100, Math.round((completedSteps / totalSteps) * 100));
   };
 
-  const isLoading = bookingsLoading || coursesLoading || creditsLoading;
+  const isLoading = bookingsLoading || coursesLoading || creditsLoading || eventsLoading;
 
   return (
     <div className="space-y-8">
@@ -162,8 +208,106 @@ export default function DashboardPage() {
                       <p className="font-medium">No upcoming appointments</p>
                       <p className="text-sm text-muted-foreground">Ready to explore your path?</p>
                     </div>
-                    <Button variant="outline" asChild className="mt-2">
+                    <Button variant="outline" asChild className="mt-2 text-primary border-primary/20 hover:bg-primary/5">
                       <Link href="/bookings/new">Book a Reading</Link>
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* My Courses Section */}
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-primary" />
+                    My Courses
+                  </CardTitle>
+                  <CardDescription>Your learning journey</CardDescription>
+                </div>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/courses">View All</Link>
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {enrollments && enrollments.length > 0 ? (
+                  <div className="space-y-4">
+                    {enrollments.slice(0, 3).map((enrollment) => (
+                      <div key={enrollment.id} className="p-4 rounded-xl border border-border/50 bg-muted/20 hover:bg-muted/30 transition-colors">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-medium text-sm line-clamp-1">{enrollment.course?.title}</h4>
+                          <span className="text-xs font-bold text-primary">{calculateProgress(enrollment)}%</span>
+                        </div>
+                        <Progress value={calculateProgress(enrollment)} className="h-1.5 mb-3" />
+                        <Button variant="outline" size="sm" className="w-full h-8 text-xs" asChild>
+                          <Link href={`/courses/${enrollment.courseId}`}>Continue Learning</Link>
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <BookOpen className="h-8 w-8 mx-auto text-muted-foreground/50 mb-3" />
+                    <p className="text-sm text-muted-foreground mb-4">No active courses yet</p>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href="/courses">Explore Courses</Link>
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Upcoming Events Section */}
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-accent" />
+                    Upcoming Events
+                  </CardTitle>
+                  <CardDescription>Don't miss out on the magic</CardDescription>
+                </div>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/events">View All</Link>
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {upcomingEvents.length > 0 ? (
+                  <div className="space-y-4">
+                    {upcomingEvents.slice(0, 3).map((event) => (
+                      <div key={event.id} className="flex gap-4 p-3 rounded-xl border border-border/50 bg-muted/20 hover:bg-muted/30 transition-colors group">
+                        <div className="w-12 h-12 rounded-lg bg-primary/10 flex flex-col items-center justify-center shrink-0">
+                          <span className="text-[10px] uppercase font-bold text-primary opacity-70">
+                            {formatMonth(event.startDateTime)}
+                          </span>
+                          <span className="text-lg font-bold text-primary leading-none">
+                            {formatDay(event.startDateTime)}
+                          </span>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold text-sm truncate">{event.title}</h4>
+                          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                            <Clock className="w-3 h-3" />
+                            {formatTime(event.startDateTime)}
+                          </p>
+                        </div>
+                        <Button variant="ghost" size="icon" className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" asChild>
+                          <Link href={`/events/${event.id}`}>
+                            <Play className="w-4 h-4" />
+                          </Link>
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Calendar className="h-8 w-8 mx-auto text-muted-foreground/50 mb-3" />
+                    <p className="text-sm text-muted-foreground mb-4">No events scheduled yet</p>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href="/events">Check Calendar</Link>
                     </Button>
                   </div>
                 )}
