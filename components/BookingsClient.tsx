@@ -13,6 +13,7 @@ import { useBookings } from '@/lib/hooks'
 import { useAuthContext } from '@/contexts'
 import type { Service } from '@/lib/api/types'
 import { Video, MapPin, Clock, DollarSign } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export default function BookingsClient() {
   const searchParams = useSearchParams()

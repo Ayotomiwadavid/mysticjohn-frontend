@@ -54,6 +54,7 @@ export default function EventDetailPage() {
             const result = await checkout({
                 itemType: 'event',
                 eventId: id,
+                eventTitle: event?.title,
                 quantity: 1,
                 price: event?.price,
             });
@@ -285,8 +286,8 @@ export default function EventDetailPage() {
                                                                     event.endDateTime && !isNaN(parseISO(event.endDateTime).getTime())
                                                                         ? parseISO(event.endDateTime)
                                                                         : new Date(
-                                                                              parseISO(event.startDateTime).getTime() + 2 * 60 * 60 * 1000
-                                                                          ),
+                                                                            parseISO(event.startDateTime).getTime() + 2 * 60 * 60 * 1000
+                                                                        ),
                                                                 description: event.description || 'Live event',
                                                                 location: event.isOnline ? 'Google Meet' : event.location || '',
                                                             })}

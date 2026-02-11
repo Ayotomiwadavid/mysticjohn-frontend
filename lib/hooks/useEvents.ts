@@ -20,34 +20,41 @@ interface UseEventsReturn {
  * Normalize backend event into frontend Event shape
  */
 const adaptEvent = (e: any): Event => {
-    const start = e?.startDateTime ?? e?.date ?? '';
-    const online = e?.isOnline ?? (e?.eventType === 'online');
-    const meeting = e?.meetingLink ?? e?.googleMeetLink ?? undefined;
-    const created = e?.createdAt ?? new Date().toISOString();
-    const updated = e?.updatedAt ?? e?.createdAt ?? created;
+    // Some endpoints return the event nested under an 'event' property
+    const item = e?.event ?? e;
+
+    const start = item?.startDateTime ?? item?.date ?? e?.startDateTime ?? e?.date ?? '';
+    const online = item?.isOnline ?? (item?.eventType === 'online') ?? e?.isOnline ?? (e?.eventType === 'online');
+    const meeting = item?.meetingLink ?? item?.googleMeetLink ?? e?.meetingLink ?? e?.googleMeetLink ?? undefined;
+    const created = item?.createdAt ?? e?.createdAt ?? new Date().toISOString();
+    const updated = item?.updatedAt ?? item?.createdAt ?? e?.updatedAt ?? e?.createdAt ?? created;
+
+    // Available tickets might be at the wrapper level or item level
     const available =
         typeof e?.availableTickets === 'number' ? e.availableTickets
-        : typeof e?.availableSlots === 'number' ? e.availableSlots
-        : (typeof e?.capacity === 'number' && typeof e?.ticketsSold === 'number'
-            ? Math.max(0, e.capacity - e.ticketsSold)
-            : undefined);
+            : typeof e?.availableSlots === 'number' ? e.availableSlots
+                : typeof item?.availableTickets === 'number' ? item.availableTickets
+                    : typeof item?.availableSlots === 'number' ? item.availableSlots
+                        : (typeof item?.capacity === 'number' && typeof item?.ticketsSold === 'number'
+                            ? Math.max(0, item.capacity - item.ticketsSold)
+                            : undefined);
 
     return {
-        id: e?._id ?? e?.id ?? '',
-        _id: e?._id,
-        title: e?.title ?? '',
-        description: e?.description,
-        eventType: e?.eventType as EventType | undefined,
+        id: item?._id ?? item?.id ?? e?._id ?? e?.id ?? '',
+        _id: item?._id ?? e?._id,
+        title: item?.title ?? e?.title ?? '',
+        description: item?.description ?? e?.description,
+        eventType: (item?.eventType ?? e?.eventType) as EventType | undefined,
         startDateTime: start,
-        endDateTime: e?.endDateTime,
-        location: e?.location,
+        endDateTime: item?.endDateTime ?? e?.endDateTime,
+        location: item?.location ?? e?.location,
         isOnline: online,
         meetingLink: meeting,
-        coverImageUrl: e?.coverImageUrl,
-        price: typeof e?.price === 'number' ? e.price : Number(e?.price ?? 0),
-        capacity: e?.capacity,
+        coverImageUrl: item?.coverImageUrl ?? e?.coverImageUrl,
+        price: typeof item?.price === 'number' ? item.price : Number(item?.price ?? e?.price ?? 0),
+        capacity: item?.capacity ?? e?.capacity,
         availableTickets: available,
-        isPublished: (typeof e?.isPublished === 'boolean' ? e.isPublished : true),
+        isPublished: (typeof item?.isPublished === 'boolean' ? item.isPublished : (typeof e?.isPublished === 'boolean' ? e.isPublished : true)),
         createdAt: created,
         updatedAt: updated,
     } as Event;

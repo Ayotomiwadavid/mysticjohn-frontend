@@ -255,6 +255,7 @@ export interface CheckoutRequest {
   courseId?: string;
   creditPackId?: string;
   eventId?: string;
+  eventTitle?: string;
   amount?: number;
   price?: number;
   credits?: number;
