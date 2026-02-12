@@ -21,7 +21,7 @@ export const bookingsApi = {
     const response = await apiClient.get<any[]>('/api/booking-types');
     // Handle both direct array and nested data property
     const services = Array.isArray(response) ? response : (response as any).data || [];
-    
+
     // Transform backend format to frontend format
     return services.map((service: any) => ({
       id: service._id || service.id,
@@ -116,15 +116,19 @@ export const bookingsApi = {
   getAllBookings: async (): Promise<Booking[]> => {
     const response = await apiClient.get<any>('/api/bookings');
     // Handle both direct array and nested data property
-    const bookings = Array.isArray(response) ? response : response.data || [];
-    
+    const bookingsData = Array.isArray(response) ? response : response.data || [];
+    // If it's still not an array but has a bookings property (common in success wrappers)
+    const bookings = Array.isArray(bookingsData) ? bookingsData : bookingsData.bookings || [];
+
     // Transform backend format to frontend format
     return bookings.map((booking: any) => ({
       ...booking,
       id: booking._id || booking.id,
       startDateTime: booking.startDateTime || booking.startTime,
       endDateTime: booking.endDateTime || booking.endTime,
-      service: booking.service || booking.bookingType,
+      serviceId: booking.bookingTypeId || booking.serviceId || (booking.service && (booking.service._id || booking.service.id)),
+      serviceName: booking.serviceName || (booking.service && booking.service.name) || (booking.bookingType && booking.bookingType.name) || 'Unknown Service',
+      price: booking.price || (booking.service && booking.service.price) || (booking.bookingType && booking.bookingType.price) || 0
     }));
   },
 
@@ -136,7 +140,7 @@ export const bookingsApi = {
     const response = await apiClient.get<any>('/api/admin/booking-types');
     // Handle both direct array and nested data property ({ status: "success", data: [...] })
     const services = Array.isArray(response) ? response : response.data || [];
-    
+
     return services.map((service: any) => ({
       id: service._id || service.id,
       name: service.name,

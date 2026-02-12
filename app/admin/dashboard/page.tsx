@@ -12,7 +12,6 @@ import { useEffect, useState } from 'react';
 import { bookingsApi } from '@/lib/api/bookings.api';
 import { adminApi } from '@/lib/api/admin.api';
 import { messagesApi } from '@/lib/api/messages.api';
-import { formatCurrency } from '@/lib/utils'; // Assuming this helper exists, or I will use Intl.NumberFormat
 
 // ... existing imports
 
@@ -37,27 +36,21 @@ export default function AdminDashboardPage() {
         ]);
 
         // Calculate Revenue (sum of price from bookings)
-        // Assuming booking.service.price covers it, or if paymentStatus is PAID
-        const totalRevenue = bookings.reduce((acc, booking) => {
-          // Check if booking has service and price
-          const price = booking.service?.price || 0;
-          return acc + price;
+        // We use the price directly from the booking (which now includes fallbacks to service price)
+        const totalRevenue = bookings.reduce((acc, booking: any) => {
+          return acc + (Number(booking.price) || 0);
         }, 0);
 
-        // Calculate upcoming bookings for the week
-        const now = new Date();
-        const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-        const upcomingBookings = bookings.filter(b => {
-          const date = new Date(b.startDateTime);
-          return date >= now && date <= nextWeek;
-        }).length;
+        // Broaden bookings count: Show total active bookings or upcoming
+        // For now, let's show ALL bookings that aren't cancelled as the primary number
+        const activeBookingsCount = bookings.filter((b: any) => b.status?.toUpperCase() !== 'CANCELLED').length;
 
         setStatsData({
           membersCount: users.length,
-          bookingsCount: upcomingBookings,
-          questionsCount: questions.filter(q => q.status === 'PENDING').length,
+          bookingsCount: activeBookingsCount,
+          questionsCount: questions.filter((q: any) => q.status === 'PENDING').length,
           revenue: totalRevenue,
-          bookingsChange: 0 // Placeholder as we don't have historical data store in frontend
+          bookingsChange: 0
         });
       } catch (error) {
         console.error("Failed to fetch dashboard stats", error);
@@ -84,7 +77,7 @@ export default function AdminDashboardPage() {
       value: loading ? "..." : statsData.bookingsCount.toString(),
       change: "", // Removed change if we can't calc it
       icon: Calendar,
-      description: "Upcoming this week",
+      description: "Active bookings",
       color: "text-purple-500",
       bg: "bg-purple-500/10",
     },
@@ -190,6 +183,17 @@ export default function AdminDashboardPage() {
                   </div>
                 </Link>
 
+                <Link href="/admin/events" className="group">
+                  <div className="p-4 rounded-xl border border-border/50 bg-background/50 hover:bg-accent/50 transition-all duration-300 hover:shadow-md flex items-center gap-4">
+                    <div className="p-3 rounded-lg bg-orange-500/10 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                      <Calendar className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Manage Events</h3>
+                      <p className="text-sm text-muted-foreground">Schedule & manage events</p>
+                    </div>
+                  </div>
+                </Link>
 
                 <Link href="/admin/credit-packs" className="group">
                   <div className="p-4 rounded-xl border border-border/50 bg-background/50 hover:bg-accent/50 transition-all duration-300 hover:shadow-md flex items-center gap-4">

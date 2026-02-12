@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Navigation } from '@/components/navigation';
+import { Navigation } from '@/components/nav-dashboard';
 import { DashboardSidebar } from '@/components/dashboard-sidebar';
 import { MobileBottomNav } from '@/components/mobile-bottom-nav';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';

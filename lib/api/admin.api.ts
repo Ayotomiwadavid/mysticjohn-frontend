@@ -69,7 +69,8 @@ export const adminApi = {
    */
   getUsers: async (): Promise<any[]> => {
     const response = await apiClient.get<any>('/api/admin/users');
-    return Array.isArray(response) ? response : (response.users || []);
+    const data = response.data || response;
+    return Array.isArray(data) ? data : (data.users || []);
   },
 };
 

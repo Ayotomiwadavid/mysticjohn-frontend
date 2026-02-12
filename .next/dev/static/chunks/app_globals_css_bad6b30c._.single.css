@@ -88,6 +88,7 @@
 
 @layer theme {
   :root, :host {
+    --color-orange-500: #fe6e00;
     --color-yellow-400: #fac800;
     --color-yellow-500: #edb200;
     --color-yellow-700: #a36100;
@@ -168,6 +169,7 @@
 
   @supports (color: lab(0% 0 0)) {
     :root, :host {
+      --color-orange-500: lab(64.272% 57.1788 90.3583);
       --color-yellow-400: lab(83.2664% 8.65132 106.895);
       --color-yellow-500: lab(76.3898% 14.5258 98.4589);
       --color-yellow-700: lab(47.8202% 25.2426 66.5015);
@@ -2059,6 +2061,16 @@
     }
   }
 
+  .bg-orange-500\/10 {
+    background-color: #fe6e001a;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-orange-500\/10 {
+      background-color: color-mix(in oklab, var(--color-orange-500) 10%, transparent);
+    }
+  }
+
   .bg-popover {
     background-color: var(--popover);
   }
@@ -2979,6 +2991,10 @@
     }
   }
 
+  .text-orange-500 {
+    color: var(--color-orange-500);
+  }
+
   .text-popover-foreground {
     color: var(--popover-foreground);
   }
@@ -3355,6 +3371,12 @@
   @media (hover: hover) {
     .group-hover\:bg-green-500:is(:where(.group):hover *) {
       background-color: var(--color-green-500);
+    }
+  }
+
+  @media (hover: hover) {
+    .group-hover\:bg-orange-500:is(:where(.group):hover *) {
+      background-color: var(--color-orange-500);
     }
   }
 

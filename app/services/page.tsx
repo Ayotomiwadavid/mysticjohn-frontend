@@ -1,6 +1,6 @@
 'use client';
 
-import { LandingNavigation } from '@/components/landing-navigation';
+import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { MysticalSparkles } from '@/components/mystical-sparkles';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import Link from 'next/link';
 export default function ServicesPage() {
     return (
         <div className="min-h-screen bg-background flex flex-col">
-            <LandingNavigation />
+            <Navigation />
 
             <main className="flex-1">
                 {/* Hero */}

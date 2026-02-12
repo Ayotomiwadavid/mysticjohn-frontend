@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { LandingNavigation } from '@/components/landing-navigation';
+import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { MysticalSparkles } from '@/components/mystical-sparkles';
 import { Button } from '@/components/ui/button';
@@ -40,7 +40,7 @@ export default function ContactPage() {
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
-            <LandingNavigation />
+            <Navigation />
 
             <main className="flex-1">
                 {/* Header */}

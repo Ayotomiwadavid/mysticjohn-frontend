@@ -2,7 +2,7 @@
 
 import { Footer } from '@/components/footer';
 import { MysticalSparkles } from '@/components/mystical-sparkles';
-import { LandingNavigation } from '@/components/landing-navigation';
+import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,7 +12,7 @@ import Image from 'next/image';
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
-      <LandingNavigation />
+      <Navigation />
 
       <main className="flex-1">
         {/* Hero Section */}
