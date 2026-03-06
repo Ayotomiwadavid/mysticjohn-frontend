@@ -22,7 +22,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (isAuthenticated && user) {
       if (user.role === 'admin') {
-        router.push('/admin/dashboard');
+        router.push('/admin');
       } else {
         router.push('/dashboard');
       }
@@ -40,7 +40,7 @@ export default function LoginPage() {
       const user = await login({ email: normalizedEmail, password: normalizedPassword });
       if (user) {
         if (user.role === 'admin') {
-          router.push('/admin/dashboard');
+          router.push('/admin');
         } else {
           router.push('/dashboard');
         }

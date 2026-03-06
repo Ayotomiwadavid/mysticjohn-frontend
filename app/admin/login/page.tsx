@@ -15,14 +15,14 @@ export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login, error, clearError, isAuthenticated, user } = useAuthContext();
+  const { login, error, clearError, isAuthenticated, user, isLoading } = useAuthContext();
   const router = useRouter();
 
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       if (user?.role === 'admin') {
-        router.push('/admin/dashboard');
+        router.push('/admin');
       } else {
         router.push('/dashboard');
       }
@@ -45,9 +45,14 @@ export default function AdminLoginPage() {
     }
   };
 
-  // Show loading or redirect if already authenticated
-  if (isAuthenticated) {
-    return null;
+  if (isLoading || isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

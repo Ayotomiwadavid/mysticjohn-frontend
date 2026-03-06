@@ -4,7 +4,7 @@ import { LayoutDashboard, Calendar, Users, Percent, MessageSquare, Settings, Boo
 import { cn } from '@/lib/utils'
 
 const adminNavigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
     { name: 'Events', href: '/admin/events', icon: Calendar },
     { name: 'Courses', href: '/admin/courses', icon: BookOpen },

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
@@ -12,8 +12,6 @@ export const metadata: Metadata = {
   title: 'John Spratt Psychic Medium | Psychic Services & Spiritual Guidance',
   description: 'Scottish Psychic Medium John Spratt - Experience mystical readings, spiritual courses, and psychic guidance with a Scottish flair.',
   manifest: '/manifest.json',
-  themeColor: '#7c3aed',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
   icons: {
     icon: [
       {
@@ -31,6 +29,13 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-icon.png',
   },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#7c3aed',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({

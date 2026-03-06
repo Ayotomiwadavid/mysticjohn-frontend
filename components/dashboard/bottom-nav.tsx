@@ -7,25 +7,25 @@ import { cn } from '@/lib/utils';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
-  { name: 'Bookings', href: '/bookings', icon: Calendar },
-  { name: 'Horoscopes', href: '/horoscopes', icon: Sparkles },
-  { name: 'Tarot', href: '/tarot', icon: Gem },
-  { name: 'Events', href: '/events', icon: CalendarCheck },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Bookings', href: '/dashboard/bookings', icon: Calendar },
+  { name: 'Horoscopes', href: '/dashboard/horoscopes', icon: Sparkles },
+  { name: 'Tarot', href: '/dashboard/tarot', icon: Gem },
+  { name: 'Events', href: '/dashboard/events', icon: CalendarCheck },
+  { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
 // Routes that should show the bottom nav
 const showOnRoutes = [
   '/dashboard',
-  '/bookings',
-  '/bookings/my',
-  '/horoscopes',
-  '/tarot',
-  '/ai-chat',
-  '/events',
-  '/courses',
-  '/settings',
-  '/messages',
+  '/dashboard/bookings',
+  '/dashboard/bookings/my',
+  '/dashboard/horoscopes',
+  '/dashboard/tarot',
+  '/dashboard/ai-chat',
+  '/dashboard/events',
+  '/dashboard/courses',
+  '/dashboard/settings',
+  '/dashboard/messages',
 ];
 
 export function MobileBottomNav() {
@@ -45,7 +45,7 @@ export function MobileBottomNav() {
       <div className="grid grid-cols-6 h-16">
         {navigation.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+          const isActive = pathname === item.href;
 
           return (
             <Link
