@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Sparkles, Calendar, BookOpen, MessageSquare, Settings, Home, Coins, Zap, Gem, Bot, CalendarCheck } from 'lucide-react'
+import { Sparkles, Calendar, BookOpen, MessageSquare, Settings, Home, Coins, Plus , Gem, Bot, CalendarCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useCredits } from '@/lib/hooks'
@@ -63,11 +63,10 @@ export function DashboardSidebar({ className, onLinkClick }: DashboardSidebarPro
             </div>
             <Button
               onClick={() => setBuyCreditsOpen(true)}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
+              className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border-0 shadow-none hover:shadow-lg transition-all"
               size="sm"
             >
-              <Zap className="h-4 w-4 mr-2" />
-              Buy Credits
+              <Plus className="h-4 w-4 mr-1" /> Top Up Credits
             </Button>
           </div>
 

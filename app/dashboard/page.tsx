@@ -121,8 +121,8 @@ export default function DashboardPage() {
     <div className="space-y-8">
       {/* Welcome Header */}
       <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-primary/10 via-purple-500/5 to-transparent p-8 md:p-12 border border-primary/10">
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 blur-3xl rounded-full" />
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-accent/20 blur-3xl rounded-full" />
+        <div className="absolute pointer-events-none -top-24 -right-24 w-64 h-64 bg-primary/20 blur-3xl rounded-full" />
+        <div className="absolute pointer-events-none -bottom-24 -left-24 w-64 h-64 bg-accent/20 blur-3xl rounded-full" />
 
         <div className="relative z-10 max-w-2xl">
           <Badge variant="outline" className="mb-4 bg-background/50 backdrop-blur-sm border-primary/30 text-primary">
@@ -145,10 +145,10 @@ export default function DashboardPage() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             {/* Credit Balance Card */}
             <Card className="py-3 border-border/50 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-300 group overflow-hidden relative">
-              <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 pointer-events-none bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Credit Balance</CardTitle>
                 <Coins className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
@@ -171,7 +171,7 @@ export default function DashboardPage() {
 
             {/* Next Appointment Card */}
             <Card className="py-3 border-border/50 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-300 md:col-span-2 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+              <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
                 <Calendar className="w-24 h-24 text-primary" />
               </div>
               <CardHeader>
